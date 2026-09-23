@@ -1,0 +1,16 @@
+{
+  "name": "Grabble",
+  "short_name": "Grabble",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#9b4437",
+  "theme_color": "#9b4437",
+  "icons": [
+    {
+      "src": "/assets/grabble-icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
