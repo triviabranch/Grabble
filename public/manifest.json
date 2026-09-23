@@ -7,9 +7,9 @@
   "theme_color": "#9b4437",
   "icons": [
     {
-      "src": "/assets/grabble-icon.png",
+      "src": "/assets/grabble-icon.jpg",
       "sizes": "1024x1024",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ]
