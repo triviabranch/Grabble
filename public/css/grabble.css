@@ -69,3 +69,105 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
 .shell-tv .display-stage>.corners .corner .player-score-line,.shell-display .display-stage>.corners .corner .player-score-line{flex-wrap:wrap}
 .shell-tv .display-stage>.corners .corner .score-line-word,.shell-display .display-stage>.corners .corner .score-line-word{max-width:100%;overflow:hidden}
 @media(max-width:700px){.score-header{grid-template-columns:1.4rem minmax(0,1fr) auto auto auto;gap:5px;padding-inline:6px;font-size:.55rem}.score-row{grid-template-columns:1.4rem minmax(0,1fr) auto auto auto;gap:5px;padding:8px 6px}.score-tile{width:22px;height:22px}.player-score-line{gap:5px;font-size:.68rem}.player-score-line .score-word-tiles{gap:2px}}
+
+
+/* Shared-screen live board v3: compact perimeter players, complete central pool. */
+.shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)),
+.shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)){
+  display:grid!important;
+  grid-template-columns:minmax(150px,.82fr) minmax(360px,1.8fr) minmax(150px,.82fr)!important;
+  grid-template-rows:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:clamp(8px,1.25vw,18px)!important;
+  padding:clamp(8px,1.4vw,20px)!important;
+  align-items:stretch!important;
+}
+.shell-tv .display-stage:not(:has(.display-lobby))>.display-pool,
+.shell-display .display-stage:not(:has(.display-lobby))>.display-pool{
+  grid-column:2!important;
+  grid-row:1/3!important;
+  position:relative!important;
+  inset:auto!important;
+  transform:none!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:none!important;
+  max-height:none!important;
+  min-width:0!important;
+  min-height:0!important;
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  grid-template-rows:repeat(5,minmax(0,1fr))!important;
+  gap:clamp(4px,.7vw,10px)!important;
+  align-content:stretch!important;
+  justify-items:center!important;
+  align-items:center!important;
+  padding:clamp(48px,5vw,72px) clamp(18px,2.2vw,34px) clamp(18px,2.2vw,30px)!important;
+  overflow:hidden!important;
+  z-index:2!important;
+}
+.shell-tv .display-stage:not(:has(.display-lobby))>.display-pool>.token,
+.shell-display .display-stage:not(:has(.display-lobby))>.display-pool>.token{
+  position:static!important;
+  left:auto!important;
+  top:auto!important;
+  width:clamp(34px,4.3vw,64px)!important;
+  height:clamp(34px,4.3vw,64px)!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  margin:0!important;
+  transform:none!important;
+}
+.shell-tv .display-stage>.corners .corner,
+.shell-display .display-stage>.corners .corner{
+  min-height:0!important;
+  height:auto!important;
+  max-height:100%!important;
+  padding:clamp(8px,1vw,14px)!important;
+  border-radius:clamp(12px,1.2vw,18px)!important;
+  overflow:hidden!important;
+  font-size:clamp(.72rem,1.05vw,1rem)!important;
+}
+.shell-tv .display-stage>.corners .corner .display-player-head,
+.shell-display .display-stage>.corners .corner .display-player-head{
+  min-height:0!important;
+  margin-bottom:2px!important;
+}
+.shell-tv .display-stage>.corners .corner .display-player-head>b,
+.shell-display .display-stage>.corners .corner .display-player-head>b{
+  font-size:clamp(.85rem,1.25vw,1.2rem)!important;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.shell-tv .display-stage>.corners .corner .player-score-line,
+.shell-display .display-stage>.corners .corner .player-score-line{
+  margin-top:clamp(4px,.55vw,8px)!important;
+  gap:clamp(4px,.6vw,8px)!important;
+  font-size:clamp(.64rem,.85vw,.88rem)!important;
+}
+.shell-tv .display-stage>.corners .corner .score-line-word .score-tile,
+.shell-display .display-stage>.corners .corner .score-line-word .score-tile{
+  width:clamp(18px,1.7vw,28px)!important;
+  height:clamp(18px,1.7vw,28px)!important;
+  border-radius:5px!important;
+}
+@media(max-width:900px){
+  .shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)),
+  .shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)){
+    grid-template-columns:minmax(106px,.7fr) minmax(250px,1.8fr) minmax(106px,.7fr)!important;
+    gap:6px!important;
+    padding:6px!important;
+  }
+  .shell-tv .display-stage:not(:has(.display-lobby))>.display-pool,
+  .shell-display .display-stage:not(:has(.display-lobby))>.display-pool{
+    padding:40px 10px 12px!important;
+    gap:3px!important;
+  }
+  .shell-tv .display-stage:not(:has(.display-lobby))>.display-pool>.token,
+  .shell-display .display-stage:not(:has(.display-lobby))>.display-pool>.token{
+    width:clamp(27px,5vw,42px)!important;
+    height:clamp(27px,5vw,42px)!important;
+    border-radius:9px!important;
+    font-size:clamp(.75rem,1.5vw,1rem)!important;
+  }
+}
