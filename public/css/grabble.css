@@ -334,3 +334,31 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
   .setup-modal-tv .setup-page-actions button,
   .setup-modal-tv .setup-footer button{min-width:120px!important}
 }
+
+
+/* TBLive TV setup contract: bounded card, centred wordmark, one action rail. */
+.setup-modal-tv .setup-card{position:relative!important;width:min(960px,calc(100vw - 64px))!important;height:min(720px,calc(100dvh - 64px))!important;min-height:0!important;max-height:calc(100dvh - 64px)!important;padding:32px 44px 28px!important;border-radius:30px!important;overflow:hidden!important}
+.setup-modal-tv .setup-head-tv{position:relative!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;min-height:78px!important}
+.setup-modal-tv .setup-head-tv>img{width:min(300px,42vw)!important;max-height:64px!important;margin:0 auto!important}
+.setup-modal-tv .setup-tv-back{position:absolute!important;left:0!important;top:0!important;display:inline-flex!important;align-items:center!important;gap:8px!important;padding:.5rem .8rem!important;background:transparent!important;color:var(--bone)!important;border:2px solid rgba(255,241,220,.5)!important;box-shadow:none!important;font-size:clamp(.72rem,1.2vw,.95rem)!important;z-index:2!important}
+.setup-modal-tv .setup-tv-back:hover,.setup-modal-tv .setup-tv-back:focus-visible{background:var(--hot)!important;color:var(--ink)!important;border-color:var(--hot)!important}
+.setup-modal-tv .setup-step-label{margin:8px 0 0!important;color:var(--peach)!important;font-size:.68rem!important;font-weight:900!important;letter-spacing:.16em!important;text-transform:uppercase!important}
+.setup-modal-tv .setup-progress{margin:8px 0 0!important}
+.setup-modal-tv .setup-page{width:min(760px,100%)!important;margin:0 auto!important;min-height:0!important;flex:1 1 auto!important}
+.setup-modal-tv .setup-options{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important;margin:24px 0!important}
+.setup-modal-tv .setup-option{aspect-ratio:1/1!important;min-height:0!important;height:auto!important;padding:24px!important;border:3px solid transparent!important;outline:none!important;transform:none!important}
+.setup-modal-tv .setup-option.selected{background:var(--hot)!important;border-color:var(--hot)!important;outline:none!important;transform:none!important}
+.setup-modal-tv .setup-page-actions,.setup-modal-tv .setup-footer{position:static!important;width:100%!important;min-height:56px!important;flex:0 0 auto!important;margin-top:auto!important;padding-top:16px!important}
+.setup-modal-tv .setup-page-actions{justify-content:flex-end!important}
+.setup-modal-tv .setup-footer{justify-content:space-between!important}
+.setup-modal-tv .setup-page-actions button,.setup-modal-tv .setup-footer button{min-width:150px!important}
+@media(max-width:700px){
+ .setup-modal-tv{padding:12px!important}
+ .setup-modal-tv .setup-card{width:100%!important;height:calc(100dvh - 24px)!important;max-height:calc(100dvh - 24px)!important;padding:20px 18px!important;border-radius:24px!important}
+ .setup-modal-tv .setup-head-tv{min-height:72px!important}
+ .setup-modal-tv .setup-tv-back{font-size:.7rem!important;padding:.45rem .6rem!important}
+ .setup-modal-tv .setup-options{grid-template-columns:1fr!important;gap:10px!important;margin:16px 0!important;overflow:auto!important}
+ .setup-modal-tv .setup-option{aspect-ratio:auto!important;min-height:92px!important}
+ .setup-modal-tv .setup-page-actions,.setup-modal-tv .setup-footer{padding-top:10px!important}
+ .setup-modal-tv .setup-page-actions button,.setup-modal-tv .setup-footer button{min-width:120px!important}
+}
