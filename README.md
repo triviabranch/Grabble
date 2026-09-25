@@ -39,3 +39,7 @@ The `/tv/[CODE]` shell is a genuine TV surface, not an alias for `/display/[CODE
 A surface migration is not complete until the affected surface passes the TBLive conformance checks and the relevant device/browser smoke tests.
 
 The dictionary is intentionally configurable through Grabble Admin and is cached by the admin Durable Object before public play.
+
+## Contract enforcement
+
+The static surface contract is checked in CI with `node tests/conformance/html-surfaces.mjs`. This verifies that all canonical shells exist, load external assets, remain distinct where required, and that the Worker no longer embeds the presentation monolith. Device-level checks for Fire TV/Silk, HDMI display and mobile play remain merge/release gates documented in `docs/HTML-PER-SURFACE-MIGRATION.md`.
