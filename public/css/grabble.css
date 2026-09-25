@@ -249,3 +249,88 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
 
 /* Sparse score modifiers: invisible during play, revealed only in scoring/results. */
 .token{position:absolute}.score-tile{position:relative}.tile-bonus{position:absolute;top:-7px;right:-7px;display:grid;place-items:center;min-width:20px;height:16px;padding:0 4px;border-radius:6px;background:var(--hot);color:var(--ink);font-size:.52rem;font-style:normal;font-weight:1000;letter-spacing:.02em;line-height:1;box-shadow:0 2px 0 rgba(37,24,26,.35)}.score-tile .tile-bonus{top:-8px;right:-8px;min-width:18px;height:14px;font-size:.46rem}.result-space .score-word-tiles{display:inline-flex;justify-content:center;margin-top:6px}.result-space .score-tile{width:clamp(28px,3vw,42px);height:clamp(28px,3vw,42px);font-size:.9em}
+
+
+/* TBLive TV setup: one contained card, one stable action rail, no viewport bleed. */
+.setup-modal-tv{
+  position:fixed!important;
+  inset:0!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:clamp(18px,3vw,36px)!important;
+  overflow:hidden!important;
+  background:rgba(37,24,26,.88)!important;
+}
+.setup-modal-tv .setup-backdrop{position:absolute!important;inset:0!important}
+.setup-modal-tv .setup-card{
+  width:min(920px,calc(100vw - clamp(36px,6vw,72px)))!important;
+  height:min(720px,calc(100dvh - clamp(36px,6vw,72px)))!important;
+  min-height:0!important;
+  max-height:calc(100dvh - clamp(36px,6vw,72px))!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-start!important;
+  gap:0!important;
+  padding:clamp(24px,4vw,44px)!important;
+  border:2px solid rgba(255,241,220,.42)!important;
+  border-radius:30px!important;
+  box-shadow:0 24px 80px rgba(37,24,26,.55)!important;
+  overflow:hidden!important;
+}
+.setup-modal-tv .setup-head{flex:0 0 auto!important}
+.setup-modal-tv .setup-head>img{width:min(300px,52vw)!important;max-height:68px!important}
+.setup-modal-tv .setup-progress{margin-top:12px!important}
+.setup-modal-tv .setup-page{
+  width:100%!important;
+  max-width:760px!important;
+  margin:0 auto!important;
+  flex:1 1 auto!important;
+  min-height:0!important;
+  align-content:center!important;
+  justify-content:center!important;
+}
+.setup-modal-tv .setup-page h2{font-size:clamp(2rem,4.8vw,4rem)!important;margin:.2em 0!important}
+.setup-modal-tv .setup-page>p{color:var(--peach)!important}
+.setup-modal-tv .setup-options{width:100%!important;margin:24px 0!important;gap:16px!important}
+.setup-modal-tv .setup-option{
+  min-height:150px!important;
+  padding:22px!important;
+  border:3px solid transparent!important;
+  outline:0!important;
+  transform:none!important;
+}
+.setup-modal-tv .setup-option.selected{
+  background:var(--hot)!important;
+  border-color:var(--hot)!important;
+  color:var(--ink)!important;
+  outline:0!important;
+  transform:none!important;
+  box-shadow:0 6px 0 var(--deep)!important;
+}
+.setup-modal-tv .setup-option.selected small{color:var(--ink)!important}
+.setup-modal-tv .setup-page-actions,
+.setup-modal-tv .setup-footer{
+  width:100%!important;
+  flex:0 0 auto!important;
+  min-height:56px!important;
+  margin-top:auto!important;
+  padding-top:18px!important;
+  align-items:center!important;
+}
+.setup-modal-tv .setup-page-actions{justify-content:flex-end!important}
+.setup-modal-tv .setup-footer{justify-content:space-between!important}
+.setup-modal-tv .setup-page-actions button,
+.setup-modal-tv .setup-footer button{min-width:150px!important}
+@media(max-width:700px){
+  .setup-modal-tv{padding:12px!important}
+  .setup-modal-tv .setup-card{width:100%!important;height:calc(100dvh - 24px)!important;max-height:calc(100dvh - 24px)!important;padding:22px 18px!important;border-radius:24px!important}
+  .setup-modal-tv .setup-options{grid-template-columns:1fr!important;margin:18px 0!important;overflow:auto!important}
+  .setup-modal-tv .setup-option{min-height:92px!important;padding:16px!important}
+  .setup-modal-tv .setup-option strong{font-size:1.05rem!important}
+  .setup-modal-tv .setup-option small{font-size:.84rem!important}
+  .setup-modal-tv .setup-page h2{font-size:clamp(1.9rem,9vw,3rem)!important}
+  .setup-modal-tv .setup-page-actions,
+  .setup-modal-tv .setup-footer{padding-top:12px!important}
+  .setup-modal-tv .setup-page-actions button,
+  .setup-modal-tv .setup-footer button{min-width:120px!important}
+}
