@@ -19,4 +19,4 @@ new_sqlite_classes = ["GrabbleRoom", "GrabbleAdmin"]
 # Cloudflare build retrigger 2026-09-24T16:31Z
 
 [vars]
-TBLIVE_REGISTRY_URL = "https://tblive-registry.triviabranch.com"
+TBLIVE_REGISTRY_URL = "https://tblive.triviabranch.com"
