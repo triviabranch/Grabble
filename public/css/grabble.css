@@ -44,3 +44,7 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
 .shell-tv .display-result-stage>.cumulative-board,.shell-display .display-result-stage>.cumulative-board{flex:0 1 auto!important;position:relative!important;inset:auto!important;width:min(860px,92vw)!important;max-height:min(68dvh,620px)!important;margin:0!important;transform:none!important}
 .shell-tv .display-result-stage>.tv-result-actions,.shell-display .display-result-stage>.tv-result-actions{position:relative!important;inset:auto!important;display:flex!important;flex:0 0 auto!important;justify-content:center!important;align-items:center!important;margin:0!important;z-index:5!important}
 @media(max-width:700px){.shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage))>.display-pool,.shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage))>.display-pool{width:min(48vw,360px)!important;height:min(36vh,250px)!important;max-width:calc(100% - 150px)!important;max-height:calc(100% - 120px)!important}.shell-tv .display-result-stage,.shell-display .display-result-stage{gap:14px!important}.shell-tv .display-result-stage>.cumulative-board,.shell-display .display-result-stage>.cumulative-board{max-height:68dvh!important}}
+
+/* Lobby waiting state: keep the status under the join details. */
+.display-qr{align-self:stretch;}
+.waiting-status{display:block;margin-top:auto;align-self:flex-end;width:100%;padding-top:10px;color:var(--peach);font-size:.82rem;font-weight:900;letter-spacing:.08em;text-align:right;text-transform:uppercase;}
