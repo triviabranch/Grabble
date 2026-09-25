@@ -45,6 +45,14 @@ Room status is held in the Grabble Admin Durable Object as operational metadata.
 | TV | Fire TV/Silk, TV-sized Chromium | create, QR lobby, remote focus, start, gameplay, results, no scroll |
 | Admin | desktop/mobile browser | room list, dictionary config, comparison, kill room |
 
+## Current TV contract alignment
+
+The hostless `/tv/[CODE]` path now follows the TBLive entry rhythm:
+
+`TV create modal → room creation → 2.5 second Grabble splash → lightweight QR join bridge → live QR lobby → launch/countdown → game → results continuation`.
+
+The TV surface has a dedicated adapter, a TriviaBranch return control, centred Grabble wordmark, and no top-right `TV` label. The hostless room remains authoritative in the existing room/WebSocket implementation.
+
 ## Next extraction phase
 
 After this branch passes device smoke tests, continue extracting the shared client into small modules without changing the room protocol:
