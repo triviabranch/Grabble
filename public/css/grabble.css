@@ -50,3 +50,22 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
 /* Lobby waiting state: keep the status under the join details. */
 .display-qr{align-self:stretch;}
 .waiting-status{display:block;margin-top:auto;align-self:flex-end;width:100%;padding-top:10px;color:var(--peach);font-size:.82rem;font-weight:900;letter-spacing:.08em;text-align:right;text-transform:uppercase;}
+
+/* Shared TV score rows: readable word tiles and explicit total column. */
+.score-header{display:grid;grid-template-columns:2rem minmax(0,1fr) auto auto auto;gap:12px;align-items:end;padding:0 12px 3px;color:var(--peach);font-size:.66rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.score-header span:nth-child(3),.score-header span:nth-child(4),.score-header strong{text-align:right}
+.score-header strong{color:var(--hot)}
+.score-row{grid-template-columns:2rem minmax(0,1fr) auto auto auto}
+.score-word-tiles{display:inline-flex;align-items:center;justify-content:flex-end;gap:3px;min-width:0}
+.score-word-tiles.empty{color:var(--peach);opacity:.65}
+.score-tile{display:inline-grid;place-items:center;width:clamp(22px,2.5vw,34px);height:clamp(22px,2.5vw,34px);border-radius:7px;background:var(--bone);color:var(--ink);font-style:normal;font-weight:1000;box-shadow:0 3px 0 rgba(37,24,26,.35)}
+.player-score-line{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;margin-top:10px;color:var(--peach);font-size:clamp(.7rem,1.1vw,.95rem);font-weight:900;white-space:nowrap}
+.player-score-line>span:last-child{overflow:hidden;text-overflow:ellipsis}
+.score-line-word{flex:0 1 auto}
+.score-line-word .score-tile{width:clamp(22px,2.2vw,30px);height:clamp(22px,2.2vw,30px);font-size:.85em}
+.shell-tv .score-header,.shell-display .score-header{font-size:clamp(.62rem,.9vw,.82rem);padding-inline:16px}
+.shell-tv .score-row,.shell-display .score-row{font-size:clamp(.9rem,1.45vw,1.25rem);padding:clamp(10px,1vw,16px)}
+.shell-tv .score-row .score-tile,.shell-display .score-row .score-tile{width:clamp(26px,2.7vw,40px);height:clamp(26px,2.7vw,40px);font-size:clamp(.8rem,1.3vw,1.1rem)}
+.shell-tv .display-stage>.corners .corner .player-score-line,.shell-display .display-stage>.corners .corner .player-score-line{flex-wrap:wrap}
+.shell-tv .display-stage>.corners .corner .score-line-word,.shell-display .display-stage>.corners .corner .score-line-word{max-width:100%;overflow:hidden}
+@media(max-width:700px){.score-header{grid-template-columns:1.4rem minmax(0,1fr) auto auto auto;gap:5px;padding-inline:6px;font-size:.55rem}.score-row{grid-template-columns:1.4rem minmax(0,1fr) auto auto auto;gap:5px;padding:8px 6px}.score-tile{width:22px;height:22px}.player-score-line{gap:5px;font-size:.68rem}.player-score-line .score-word-tiles{gap:2px}}
