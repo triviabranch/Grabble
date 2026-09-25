@@ -1,0 +1,17 @@
+{
+  "contractVersion": "1.23",
+  "capabilities": {
+    "mobilePlay": true,
+    "playableWithoutSharedScreen": true,
+    "hostlessTv": true,
+    "tvDepth": "companion",
+    "tvCreatesRoom": true,
+    "hostedDisplay": true,
+    "professionalHostMode": false
+  },
+  "routes": {
+    "mobile": "/play/[CODE]",
+    "tv": "/tv/[CODE]",
+    "display": "/display/[CODE]"
+  }
+}
