@@ -8,8 +8,9 @@ Players continuously drag moving letter tokens from a shared pool into the next 
 
 Grabble is the first game migrated to the TBLive HTML-per-surface implementation pattern.
 
-Each canonical browser surface has its own static HTML shell:
+Each canonical browser surface has its own static HTML shell, including the explicit home shell:
 
+- `public/surfaces/home.html`
 - `public/surfaces/play.html`
 - `public/surfaces/display.html`
 - `public/surfaces/tv.html`
@@ -23,7 +24,9 @@ The shells load the shared static client and stylesheet:
 
 The Worker maps the clean TBLive routes to these shells. The public routes remain canonical and must not expose `.html` URLs or route fallbacks.
 
-This first migration deliberately preserves the existing Durable Object room, WebSocket messages, tokens, lifecycle and scoring behaviour. It changes the presentation boundary first so each surface can be tested independently on mobile browsers, desktop/display browsers and Fire TV/Silk before deeper client-module extraction.
+The Worker has explicit mappings for `/`, `/play/[CODE]`, `/display/[CODE]`, `/tv/[CODE]`, `/host/[CODE]` and `/admin`. Unknown paths return 404; they never fall back to the player surface.
+
+The migration preserves the existing Durable Object room, WebSocket messages, tokens, lifecycle and scoring behaviour. The central room registry contract is also exposed through `/api/admin/rooms`, `/api/admin/games`, the canonical room-kill route and `kill-all`, so the standalone Grabble Worker can be controlled by the central TBLive Admin without inventing another room model.
 
 ## Fire TV and browser compatibility
 
@@ -38,8 +41,8 @@ The `/tv/[CODE]` shell is a genuine TV surface, not an alias for `/display/[CODE
 
 A surface migration is not complete until the affected surface passes the TBLive conformance checks and the relevant device/browser smoke tests.
 
-The dictionary is intentionally configurable through Grabble Admin and is cached by the admin Durable Object before public play.
+The dictionary is intentionally configurable through the game adapter and cached by the admin Durable Object before public play. Game-specific diagnostics remain an adapter capability; the production operational surface is the central TBLive Admin.
 
 ## Contract enforcement
 
-The static surface contract is checked in CI with `node tests/conformance/html-surfaces.mjs`. This verifies that all canonical shells exist, load external assets, remain distinct where required, and that the Worker no longer embeds the presentation monolith. Device-level checks for Fire TV/Silk, HDMI display and mobile play remain merge/release gates documented in `docs/HTML-PER-SURFACE-MIGRATION.md`.
+The static surface contract is checked in CI with `node tests/conformance/html-surfaces.mjs`. This verifies that all canonical shells exist, load external assets, remain distinct where required, that the Worker exposes the room registry contract and that unknown routes do not fall back. Device-level checks for Fire TV/Silk, HDMI display and mobile play remain merge/release gates documented in `docs/HTML-PER-SURFACE-MIGRATION.md`.

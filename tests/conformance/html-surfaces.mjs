@@ -4,7 +4,7 @@ import { access } from 'node:fs/promises';
 import path from 'node:path';
 
 const root = process.cwd();
-const surfaces = ['play', 'host', 'display', 'tv', 'admin'];
+const surfaces = ['home', 'play', 'host', 'display', 'tv', 'admin'];
 const read = file => readFile(path.join(root, file), 'utf8');
 
 for (const surface of surfaces) {
@@ -18,10 +18,16 @@ for (const surface of surfaces) {
 }
 
 const worker = await read('src/index.js');
+const wrangler = await read('wrangler.toml');
 assert.doesNotMatch(worker, /const CSS=`|const CLIENT=`|function page\(/, 'Worker must not contain the presentation monolith');
-assert.match(worker, /serveSurface\(env,request,'display'\)/, 'Worker must route the canonical display surface');
-assert.match(worker, /serveSurface\(env,request,'tv'\)/, 'Worker must route the canonical TV surface');
+assert.match(worker, /p\.length===2\)return serveSurface\(env,request,p\[0\]\)/, 'Worker must route canonical room surfaces only with a room code');
+assert.match(worker, /p\.length===0\)return serveSurface\(env,request,'home'\)/, 'Worker must route the explicit home surface');
+assert.doesNotMatch(worker, /return serveSurface\(env,request,'play'\)\}\};/, 'Worker must not fall back unknown paths to the player surface');
 assert.match(worker, /env\.ASSETS\.fetch/, 'Worker must serve static surface assets');
+assert.match(wrangler, /binding\s*=\s*"ASSETS"/, 'Wrangler must expose the ASSETS binding used by the Worker');
+assert.match(worker, /p\[2\]==='rooms'/, 'Worker must expose the TBLive room registry contract');
+assert.match(worker, /p\[2\]==='games'/, 'Worker must expose the registered games contract');
+assert.match(worker, /kill-all/, 'Worker must expose the global kill-all contract');
 
 const client = await read('public/js/grabble-client.js');
 assert.match(client, /pathParts=location\.pathname\.split/, 'Client must derive its surface from the canonical path');
