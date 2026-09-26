@@ -5,12 +5,6 @@ const base = process.env.BASE_URL || 'http://127.0.0.1:8787';
 const browser = await chromium.launch({ headless: true });
 const tvContext = await browser.newContext({ viewport: { width: 1280, height: 720 } });
 const tv = await tvContext.newPage();
- tv.on('websocket', ws => ws.on('framereceived', frame => {
-   try {
-     const message = JSON.parse(frame);
-     console.log('TV WS:', message.type, message.phase || message.payload?.phase || '');
-   } catch {}
- }));
 try {
   await tv.goto(base + '/tv', { waitUntil: 'networkidle' });
   await tv.getByRole('button', { name: 'Continue' }).click();
@@ -26,13 +20,7 @@ try {
   await player.getByRole('button', { name: 'Continue' }).click();
   await tv.getByText('Ash', { exact: true }).waitFor();
   await tv.waitForTimeout(1000);
-  await tv.locator('#start').evaluate(button => button.click());
-  await tv.waitForTimeout(250);
-  console.log('TV after start:', await tv.evaluate(() => ({
-    text: document.body.innerText,
-    socketReadyState: window.GrabbleTransport?.getSocket?.()?.readyState ?? null,
-    startButtons: document.querySelectorAll('#start').length,
-  })));
+  await tv.locator('#start').click({ force: true });
   await tv.locator('.display-pool').waitFor({ state: 'visible', timeout: 10000 });
   await new Promise(resolve => setTimeout(resolve, 34000));
   await tv.getByText(/TIME.?S UP|Leaderboard|Competition complete|Round complete/i).first().waitFor({ timeout: 10000 });
