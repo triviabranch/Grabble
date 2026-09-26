@@ -1227,6 +1227,82 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
   white-space:normal!important;
   line-height:1.2!important;
 }
+
+/* Final pool geometry repair. The player pool is a real grid so letters
+   cannot collapse into the legacy absolute-positioned layer. The shared
+   screen keeps the same six-by-five cache while giving its centre column
+   usable width on ordinary TV/Chromium viewports. */
+.shell-play .player-game > .pool{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  grid-template-rows:repeat(5,minmax(0,1fr))!important;
+  align-items:center!important;
+  justify-items:center!important;
+  align-content:stretch!important;
+  gap:clamp(6px,1.6vw,12px)!important;
+  padding:clamp(22px,4vw,34px) clamp(12px,3vw,24px) clamp(14px,2vw,22px)!important;
+  height:clamp(240px,34vh,310px)!important;
+  flex-basis:clamp(240px,34vh,310px)!important;
+  min-height:240px!important;
+}
+.shell-play .player-game > .pool > .token{
+  position:relative!important;
+  inset:auto!important;
+  left:auto!important;
+  top:auto!important;
+  transform:none!important;
+  animation:none!important;
+  width:clamp(34px,10vw,52px)!important;
+  height:clamp(34px,10vw,52px)!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  margin:0!important;
+  border-radius:clamp(10px,3vw,16px)!important;
+  font-size:clamp(.95rem,3.6vw,1.3rem)!important;
+}
+.shell-play .player-game > .pool > .pool-timer,
+.shell-play .player-game > .pool > .pool-start{
+  grid-column:1 / -1!important;
+  grid-row:1 / -1!important;
+}
+
+@media (max-width:1100px) and (min-width:701px){
+  .shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)),
+  .shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)),
+  .shell-tv .display-stage > .corners,
+  .shell-display .display-stage > .corners{
+    grid-template-columns:minmax(72px,.45fr) minmax(0,2fr) minmax(72px,.45fr)!important;
+    gap:8px!important;
+  }
+  .shell-tv .display-stage:not(:has(.display-lobby)) > .display-pool,
+  .shell-display .display-stage:not(:has(.display-lobby)) > .display-pool{
+    padding:42px 22px 18px!important;
+    gap:clamp(6px,1vw,11px)!important;
+  }
+  .shell-tv .display-stage:not(:has(.display-lobby)) > .display-pool > .token,
+  .shell-display .display-stage:not(:has(.display-lobby)) > .display-pool > .token{
+    width:clamp(38px,6vw,66px)!important;
+    height:clamp(38px,6vw,66px)!important;
+    font-size:clamp(1rem,2vw,1.6rem)!important;
+  }
+}
+
+@media (max-width:520px){
+  .shell-play .player-game > .pool{
+    height:clamp(238px,34vh,290px)!important;
+    flex-basis:clamp(238px,34vh,290px)!important;
+    gap:5px!important;
+    padding:22px 10px 14px!important;
+  }
+  .shell-play .player-game > .pool > .token{
+    width:clamp(32px,10.5vw,44px)!important;
+    height:clamp(32px,10.5vw,44px)!important;
+    border-radius:12px!important;
+    font-size:clamp(.82rem,3.5vw,1.08rem)!important;
+  }
+}
 @media(max-width:700px){
   .score-header,
   .score-row{
