@@ -17,6 +17,7 @@ for (const surface of surfaces) {
   assert.match(html, /src="\/js\/grabble-transport\.js"/, `${file} must load the shared transport`);
   assert.match(html, /src="\/js\/grabble-create\.js"/, `${file} must load the shared create controller`);
   assert.match(html, /src="\/js\/grabble-admin\.js"/, `${file} must load the shared admin controller`);
+  assert.match(html, /src="\/js\/grabble-player\.js"/, `${file} must load the shared player controller`);
   assert.match(html, /src="\/js\/tblive-qr\.js"/, `${file} must load the canonical TBLive QR module`);
   assert.doesNotMatch(html, /<script>(?!\s*<\/script>)/i, `${file} must not contain an inline application`);
 }
@@ -47,6 +48,8 @@ const transport = await read('public/js/grabble-transport.js');
 assert.match(transport, /GrabbleTransport/, 'Transport module must expose the shared room transport');
 const admin = await read('public/js/grabble-admin.js');
 assert.match(admin, /GrabbleAdmin/, 'Admin module must expose the shared admin controller');
+const player = await read('public/js/grabble-player.js');
+assert.match(player, /GrabblePlayer/, 'Player module must expose the shared player controller');
 assert.match(client, /pathParts\s*=\s*location\.pathname\.split/, 'Client must derive its surface from the canonical path');
 assert.doesNotMatch(client, /G_MODE|G_CODE/, 'Client must not depend on Worker-injected mode globals');
 assert.doesNotMatch(client, /api\.qrserver\.com|quickchart\.io|chart\.google\.com/, 'Grabble must not use third-party QR services');

@@ -17,6 +17,7 @@ for (const [name, file] of shells) {
   if (!html.includes('/js/grabble-transport.js')) throw new Error(name + ': shared transport missing');
   if (!html.includes('/js/grabble-create.js')) throw new Error(name + ': shared create controller missing');
   if (!html.includes('/js/grabble-admin.js')) throw new Error(name + ': shared admin controller missing');
+  if (!html.includes('/js/grabble-player.js')) throw new Error(name + ': shared player controller missing');
   if (name === 'tv' && !html.includes('/js/tv.js')) throw new Error('tv: dedicated surface adapter missing');
 }
 
@@ -24,10 +25,12 @@ const client = fs.readFileSync('public/js/grabble-client.js', 'utf8');
 const create = fs.readFileSync('public/js/grabble-create.js', 'utf8');
 const transport = fs.readFileSync('public/js/grabble-transport.js', 'utf8');
 const admin = fs.readFileSync('public/js/grabble-admin.js', 'utf8');
+const player = fs.readFileSync('public/js/grabble-player.js', 'utf8');
 new Function(client);
 new Function(create);
 new Function(transport);
 new Function(admin);
+new Function(player);
 for (const required of ['GrabbleCreate', 'tvHome', 'openCreateFlow']) {
   if (!create.includes(required)) throw new Error('create controller: missing ' + required);
 }
