@@ -6,6 +6,7 @@ const room = await read('src/room.js');
 const worker = await read('src/worker.js');
 const transport = await read('public/js/grabble-transport.js');
 const admin = await read('src/admin.js');
+const adminClient = await read('public/js/grabble-admin.js');
 const workflow = await read('.github/workflows/tblive-conformance.yml');
 const capabilities = JSON.parse(await read('tblive.capabilities.json'));
 
@@ -26,6 +27,7 @@ assert.match(room, /double-word|triple-word/, 'word bonuses must affect scoring'
 assert.match(transport, /seq > lastSeq \+ 1/, 'clients must request a snapshot after a sequence gap');
 assert.match(transport, /displayToken/, 'display token must be supplied by the client transport');
 assert.doesNotMatch(admin + worker, /heartbeat|lastHeartbeat|lastSeen/, 'registry must not use heartbeat-shaped fields');
+assert.doesNotMatch(adminClient, /lastSeen/, 'admin UI must not depend on heartbeat-shaped fields');
 assert.match(admin, /u\.pathname === ['"]\/register['"]/, 'registry registration must be create-time registration');
 assert.match(room, /\/unregister\//, 'room closure must unregister the room');
 assert.match(workflow, /always\(\)/, 'CI test-run reporting must run after pass or failure');

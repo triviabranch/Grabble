@@ -21,7 +21,7 @@
                   " · " +
                   r.players +
                   " players · " +
-                  new Date(r.lastSeen).toLocaleTimeString() +
+                  new Date(r.updatedAt || r.createdAt).toLocaleTimeString() +
                   '</small></span><button class="danger" data-kill="' +
                   r.code +
                   '">Kill</button></div>',
