@@ -18,11 +18,23 @@ The migration does not change:
 
 ## Changed boundary
 
-The Worker now serves explicit static surface shells from `public/surfaces/`. Each shell loads the shared Grabble client and stylesheet. The surface routes remain clean:
+The Worker now serves explicit static surface shells from `public/surfaces/`. Each shell loads the shared create controller, game runtime and stylesheet. The surface routes remain clean:
 
 `/`, `/play/[CODE]`, `/display/[CODE]`, `/tv/[CODE]`, `/host/[CODE]`, `/admin`.
 
 The static files are implementation assets, not new public routes. Clients must continue to use the canonical clean paths. Unknown paths return 404 rather than silently loading the player shell.
+
+## Current module boundary
+
+The former server monolith is split into focused modules:
+
+- `src/index.js` — Worker entrypoint and Durable Object exports;
+- `src/worker.js` — HTTP, static-asset and API routing;
+- `src/room.js` — room Durable Object, protocol, timers and game state;
+- `src/admin.js` — admin Durable Object and room metadata;
+- `src/shared.js` — shared server helpers and constants.
+
+On the browser side, `public/js/grabble-create.js` owns the shared create/home flow and `public/js/grabble-client.js` owns the remaining room/game runtime. The latter is still the next extraction target; this change intentionally preserves its room protocol and surface behavior.
 
 ## Registry and administration
 

@@ -14,11 +14,12 @@ for (const surface of surfaces) {
   assert.match(html, /<html\b/i, `${file} must be an HTML document`);
   assert.match(html, /href="\/css\/grabble\.css"/, `${file} must load the surface stylesheet`);
   assert.match(html, /src="\/js\/grabble-client\.js"/, `${file} must load the external client`);
+  assert.match(html, /src="\/js\/grabble-create\.js"/, `${file} must load the shared create controller`);
   assert.match(html, /src="\/js\/tblive-qr\.js"/, `${file} must load the canonical TBLive QR module`);
   assert.doesNotMatch(html, /<script>(?!\s*<\/script>)/i, `${file} must not contain an inline application`);
 }
 
-const worker = await read('src/index.js');
+const worker = (await read('src/index.js')) + (await read('src/worker.js')) + (await read('src/room.js')) + (await read('src/admin.js'));
 const wrangler = await read('wrangler.toml');
 assert.doesNotMatch(worker, /const CSS=`|const CLIENT=`|function page\(/, 'Worker must not contain the presentation monolith');
 assert.match(worker, /p\.length===2\)return serveSurface\(env,request,p\[0\]\)/, 'Worker must route canonical room surfaces only with a room code');
@@ -27,8 +28,8 @@ assert.doesNotMatch(worker, /return serveSurface\(env,request,'play'\)\}\};/, 'W
 assert.match(worker, /env\.ASSETS\.fetch/, 'Worker must serve static surface assets');
 assert.match(worker, /controlToken/, 'Room creation and control WebSockets must use a room-scoped control token');
 assert.match(worker, /UNAUTHORISED_CONTROL_ROLE/, 'TV/host control connections must reject missing or invalid control tokens');
-assert.match(worker, /broadcastEvent\\('player_left'/, 'Player leave must emit player_left');
-assert.match(worker, /broadcastEvent\\('player_joined'/, 'Player join must emit player_joined');
+assert.match(worker, /broadcastEvent\('player_left'/, 'Player leave must emit player_left');
+assert.match(worker, /broadcastEvent\('player_joined'/, 'Player join must emit player_joined');
 assert.match(wrangler, /binding\s*=\s*"ASSETS"/, 'Wrangler must expose the ASSETS binding used by the Worker');
 assert.match(worker, /p\[2\]==='rooms'/, 'Worker must expose the TBLive room registry contract');
 assert.match(worker, /p\[2\]==='games'/, 'Worker must expose the registered games contract');
@@ -53,9 +54,9 @@ const tv = await read('public/surfaces/tv.html');
 assert.notEqual(display, tv, 'Display and TV must remain distinct surface shells');
 
 const css = await read('public/css/grabble.css');
-assert.match(css, /setup-modal-tv[\\s\\S]*100dvh/, 'TV create flow must use a bounded dynamic viewport');
-assert.match(css, /setup-modal-tv[\\s\\S]*overflow:hidden/, 'TV create shell must contain overflow');
-assert.match(css, /setup-modal-tv[\\s\\S]*setup-footer/, 'TV create flow must have one persistent footer rail');
+assert.match(css, /setup-modal-tv[\s\S]*100dvh/, 'TV create flow must use a bounded dynamic viewport');
+assert.match(css, /setup-modal-tv[\s\S]*overflow:hidden/, 'TV create shell must contain overflow');
+assert.match(css, /setup-modal-tv[\s\S]*setup-footer/, 'TV create flow must have one persistent footer rail');
 assert.match(client, /play-again/, 'In-room replay action must exist');
 assert.match(client, /TBLiveQR/, 'QR rendering must use the canonical local TBLive renderer');
 
