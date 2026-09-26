@@ -25,13 +25,15 @@ assert.match(worker, /p\.length===2\)return serveSurface\(env,request,p\[0\]\)/,
 assert.match(worker, /p\.length===0\)return serveSurface\(env,request,'home'\)/, 'Worker must route the explicit home surface');
 assert.doesNotMatch(worker, /return serveSurface\(env,request,'play'\)\}\};/, 'Worker must not fall back unknown paths to the player surface');
 assert.match(worker, /env\.ASSETS\.fetch/, 'Worker must serve static surface assets');
+assert.match(worker, /controlToken/, 'Room creation and control WebSockets must use a room-scoped control token');
+assert.match(worker, /UNAUTHORISED_CONTROL_ROLE/, 'TV/host control connections must reject missing or invalid control tokens');
 assert.match(wrangler, /binding\s*=\s*"ASSETS"/, 'Wrangler must expose the ASSETS binding used by the Worker');
 assert.match(worker, /p\[2\]==='rooms'/, 'Worker must expose the TBLive room registry contract');
 assert.match(worker, /p\[2\]==='games'/, 'Worker must expose the registered games contract');
 assert.match(worker, /kill-all/, 'Worker must expose the global kill-all contract');
 
 const capabilities = JSON.parse(await read('tblive.capabilities.json'));
-assert.equal(capabilities.contractVersion, '1.29', 'Grabble must declare TBLive contract 1.29');
+assert.equal(capabilities.contractVersion, '1.30', 'Grabble must declare TBLive contract 1.30');
 assert.equal(capabilities.capabilities.hostlessTv, true, 'Grabble must expose hostless TV');
 assert.equal(capabilities.capabilities.tvCreatesRoom, true, 'TV must be able to create a room');
 
@@ -48,4 +50,11 @@ const display = await read('public/surfaces/display.html');
 const tv = await read('public/surfaces/tv.html');
 assert.notEqual(display, tv, 'Display and TV must remain distinct surface shells');
 
-console.log('TBLive static surface conformance passed');
+const css = await read('public/css/grabble.css');
+assert.match(css, /setup-modal-tv[\\s\\S]*100dvh/, 'TV create flow must use a bounded dynamic viewport');
+assert.match(css, /setup-modal-tv[\\s\\S]*overflow:hidden/, 'TV create shell must contain overflow');
+assert.match(css, /setup-modal-tv[\\s\\S]*setup-footer/, 'TV create flow must have one persistent footer rail');
+assert.match(client, /play-again/, 'In-room replay action must exist');
+assert.match(client, /TBLiveQR/, 'QR rendering must use the canonical local TBLive renderer');
+
+console.log('TBLive 1.30 static surface conformance passed');
