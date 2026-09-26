@@ -14,6 +14,13 @@
   const logo = () => '<img src="/assets/grabble-wordmark.png" alt="Grabble">';
   const send = (x) => window.GrabbleTransport.send(x);
   const connect = (role, name) => window.GrabbleTransport.connect(role, name);
+  document.addEventListener("click", (event) => {
+    const start = event.target.closest?.("#start");
+    if (start && (mode === "tv" || mode === "host") && state?.phase === "lobby") {
+      event.preventDefault();
+      send({ type: "start" });
+    }
+  }, true);
   function shell(x) {
     let root = app.querySelector("main.shell-" + mode),
       header;
