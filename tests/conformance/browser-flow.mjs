@@ -19,6 +19,7 @@ try {
   await player.getByRole('button', { name: 'Join game' }).click();
   await player.getByRole('button', { name: 'Continue' }).click();
   await tv.getByText('Ash', { exact: true }).waitFor();
+  await tv.waitForTimeout(1000);
   await tv.locator('#start').evaluate(button => button.click());
   await tv.locator('.display-pool').waitFor({ state: 'visible', timeout: 10000 });
   await new Promise(resolve => setTimeout(resolve, 34000));
