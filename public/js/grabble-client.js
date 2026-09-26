@@ -679,7 +679,16 @@
       const display = document.getElementById("open-display");
       if (display)
         display.onclick = () =>
-          window.open("/display/" + code, "_blank", "noopener");
+          window.open(
+            "/display/" +
+              code +
+              "?displayToken=" +
+              encodeURIComponent(
+                localStorage.getItem("grabble-display-token:" + code) || "",
+              ),
+            "_blank",
+            "noopener",
+          );
       return;
     }
     let b =
@@ -817,7 +826,16 @@
       const display = document.getElementById("open-display");
       if (display)
         display.onclick = () =>
-          window.open("/display/" + code, "_blank", "noopener");
+          window.open(
+            "/display/" +
+              code +
+              "?displayToken=" +
+              encodeURIComponent(
+                localStorage.getItem("grabble-display-token:" + code) || "",
+              ),
+            "_blank",
+            "noopener",
+          );
     }
     if (mode === "play" && state.phase === "running")
       window.GrabblePlayer.bind();

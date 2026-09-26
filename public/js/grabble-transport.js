@@ -24,6 +24,12 @@
         : role === "host"
           ? localStorage.getItem("grabble-host-token") || ""
           : "";
+    const displayToken =
+      role === "display"
+        ? new URLSearchParams(location.search).get("displayToken") ||
+          localStorage.getItem("grabble-display-token:" + config.code) ||
+          ""
+        : "";
     socket = new WebSocket(
       (location.protocol === "https:" ? "wss" : "ws") +
         "://" +
@@ -37,7 +43,9 @@
         "&playerToken=" +
         encodeURIComponent(playerToken) +
         "&controlToken=" +
-        encodeURIComponent(controlToken),
+        encodeURIComponent(controlToken) +
+        "&displayToken=" +
+        encodeURIComponent(displayToken),
     );
     socket.onopen = () => {
       if (queuedAction) {
@@ -58,6 +66,11 @@
         if (role === "play" && hello.playerToken)
           localStorage.setItem("grabble-player-token:" + config.code, hello.playerToken);
       }
+      if (Number.isFinite(message.seq) && message.seq > lastSeq + 1 && lastSeq > 0)
+        send({ type: "sync" });
+      if (message.type === "authenticated") config.onAuthenticated?.(message.payload || {});
+      if (["ack", "error", "state_changed", "phase_changed", "player_joined", "player_left", "timer_started", "timer_updated", "score_updated", "finished", "room_closed"].includes(message.type))
+        config.onEvent?.({ ...message, ...(message.payload || {}) });
       if (message.type === "left") {
         config.onLeft?.();
         return;

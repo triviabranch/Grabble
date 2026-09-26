@@ -21,3 +21,27 @@ jobs:
         with:
           node-version: 20
       - run: node tests/conformance/html-surfaces.mjs
+      - run: node tests/conformance/tblive-1.33.mjs
+
+  report:
+    if: always()
+    needs: static-surfaces
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report TBLive test run
+        env:
+          TBLIVE_TEST_RUNS_TOKEN: ${{ secrets.TBLIVE_TEST_RUNS_TOKEN }}
+          TEST_STATUS: ${{ needs.static-surfaces.result }}
+        run: |
+          if [ -z "$TBLIVE_TEST_RUNS_TOKEN" ]; then
+            echo "TBLIVE_TEST_RUNS_TOKEN is required for release conformance reporting" >&2
+            exit 1
+          fi
+          status="$TEST_STATUS"
+          [ "$status" = "success" ] && status=passed
+          [ "$status" != "passed" ] && status=failed
+          export REPORT_STATUS="$status"
+          curl --fail-with-body -X POST "https://tblive.triviabranch.com/api/admin/test-runs" \
+            -H "authorization: Bearer $TBLIVE_TEST_RUNS_TOKEN" \
+            -H "content-type: application/json" \
+            --data "$(node -e 'console.log(JSON.stringify({game:"grabble",runId:process.env.GITHUB_RUN_ID,workflow:process.env.GITHUB_WORKFLOW,branch:process.env.GITHUB_REF_NAME,commit:process.env.GITHUB_SHA,status:process.env.REPORT_STATUS,startedAt:new Date().toISOString(),finishedAt:new Date().toISOString(),contractVersion:"1.33",testName:"TBLive 1.33 conformance",message:process.env.GITHUB_SERVER_URL+"/"+process.env.GITHUB_REPOSITORY+"/actions/runs/"+process.env.GITHUB_RUN_ID}))' )"

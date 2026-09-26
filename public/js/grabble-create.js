@@ -76,6 +76,8 @@
           localStorage.setItem("grabble-tv-token", x.controlToken);
         if (surface === "host" && x.controlToken)
           localStorage.setItem("grabble-host-token", x.controlToken);
+        if (x.displayToken)
+          localStorage.setItem("grabble-display-token:" + x.code, x.displayToken);
         if (needsName)
           localStorage.setItem(
             "grabble-pending-join",
