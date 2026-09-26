@@ -14,6 +14,7 @@ for (const surface of surfaces) {
   assert.match(html, /<html\b/i, `${file} must be an HTML document`);
   assert.match(html, /href="\/css\/grabble\.css"/, `${file} must load the surface stylesheet`);
   assert.match(html, /src="\/js\/grabble-client\.js"/, `${file} must load the external client`);
+  assert.match(html, /src="\/js\/tblive-qr\.js"/, `${file} must load the canonical TBLive QR module`);
   assert.doesNotMatch(html, /<script>(?!\s*<\/script>)/i, `${file} must not contain an inline application`);
 }
 
@@ -37,6 +38,8 @@ assert.equal(capabilities.capabilities.tvCreatesRoom, true, 'TV must be able to 
 const client = await read('public/js/grabble-client.js');
 assert.match(client, /pathParts=location\.pathname\.split/, 'Client must derive its surface from the canonical path');
 assert.doesNotMatch(client, /G_MODE|G_CODE/, 'Client must not depend on Worker-injected mode globals');
+assert.doesNotMatch(client, /api\.qrserver\.com|quickchart\.io|chart\.google\.com/, 'Grabble must not use third-party QR services');
+assert.match(client, /data-join-qr/, 'Grabble must render the join QR in a local container');
 assert.match(client, /hostlessTv:true/, 'Grabble must declare hostless TV capability');
 assert.match(client, /tvEntryPhase==='idle'\)\{tvEntryPhase='lobby';connect\('tv','TV'\)/, 'TV room routes must connect directly to the hostless lobby');
 assert.doesNotMatch(client, /if\(mode==='tv'&&tvEntryPhase!==\'lobby\'\)\{/, 'TV room routes must not re-enter the legacy splash/bridge flow');
