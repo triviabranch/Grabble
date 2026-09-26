@@ -522,3 +522,71 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
   .setup-modal-tv .setup-page-actions button,
   .setup-modal-tv .setup-footer button{min-width:120px!important;min-height:54px!important}
 }
+
+
+/* TV create home: one bounded composition with no duplicate wordmark artefact. */
+.shell-tv{
+  height:100dvh!important;
+  min-height:0!important;
+  overflow:hidden!important;
+  padding:clamp(14px,2.5vw,28px) clamp(24px,4vw,64px) clamp(18px,3vw,36px)!important;
+  gap:clamp(8px,1.5vh,16px)!important;
+}
+.shell-tv>.brand{
+  min-height:clamp(70px,9vh,104px)!important;
+  height:auto!important;
+  flex:0 0 auto!important;
+}
+.shell-tv>.brand img{
+  width:clamp(240px,22vw,420px)!important;
+  max-height:clamp(58px,9vh,96px)!important;
+}
+.shell-tv .tv-create-home{
+  width:min(1100px,calc(100vw - 8vw))!important;
+  max-width:none!important;
+  min-height:0!important;
+  height:auto!important;
+  flex:1 1 auto!important;
+  margin:0 auto!important;
+  padding:clamp(28px,4vw,58px)!important;
+  justify-content:center!important;
+  align-items:center!important;
+  gap:clamp(10px,1.8vh,22px)!important;
+  overflow:hidden!important;
+  text-align:center!important;
+}
+.shell-tv .tv-create-home>img{display:none!important}
+.shell-tv .tv-create-home h1{
+  margin:0!important;
+  font-size:clamp(3rem,6vw,6rem)!important;
+  line-height:.95!important;
+}
+.shell-tv .tv-create-home>p:not(.eyebrow){
+  max-width:720px!important;
+  margin:0!important;
+  font-size:clamp(1.05rem,1.8vw,1.5rem)!important;
+  line-height:1.25!important;
+}
+.shell-tv .tv-create-home button{
+  min-width:clamp(220px,18vw,300px)!important;
+  min-height:clamp(58px,7vh,76px)!important;
+  padding:1rem 1.5rem!important;
+  font-size:clamp(1.05rem,1.5vw,1.35rem)!important;
+}
+@media(max-width:700px){
+  .shell-tv{
+    padding:10px!important;
+    gap:8px!important;
+  }
+  .shell-tv>.brand{
+    min-height:64px!important;
+  }
+  .shell-tv>.brand img{
+    width:min(250px,56vw)!important;
+    max-height:58px!important;
+  }
+  .shell-tv .tv-create-home{
+    width:100%!important;
+    padding:24px 18px!important;
+  }
+}
