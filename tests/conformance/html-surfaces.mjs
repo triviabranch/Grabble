@@ -27,6 +27,8 @@ assert.doesNotMatch(worker, /return serveSurface\(env,request,'play'\)\}\};/, 'W
 assert.match(worker, /env\.ASSETS\.fetch/, 'Worker must serve static surface assets');
 assert.match(worker, /controlToken/, 'Room creation and control WebSockets must use a room-scoped control token');
 assert.match(worker, /UNAUTHORISED_CONTROL_ROLE/, 'TV/host control connections must reject missing or invalid control tokens');
+assert.match(worker, /broadcastEvent\\('player_left'/, 'Player leave must emit player_left');
+assert.match(worker, /broadcastEvent\\('player_joined'/, 'Player join must emit player_joined');
 assert.match(wrangler, /binding\s*=\s*"ASSETS"/, 'Wrangler must expose the ASSETS binding used by the Worker');
 assert.match(worker, /p\[2\]==='rooms'/, 'Worker must expose the TBLive room registry contract');
 assert.match(worker, /p\[2\]==='games'/, 'Worker must expose the registered games contract');
