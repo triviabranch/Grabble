@@ -1,5 +1,5 @@
 {
-  "contractVersion": "1.29",
+  "contractVersion": "1.30",
   "capabilities": {
     "mobilePlay": true,
     "playableWithoutSharedScreen": true,
