@@ -591,6 +591,129 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
   }
 }
 
+/* Final shared-screen letter-pool contract: one readable 6 x 5 cache.
+   Keep this as the last TV/display pool layer so earlier legacy overrides
+   cannot turn the cache back into an overlapping absolute-positioned strip. */
+.shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)),
+.shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)){
+  display:grid!important;
+  grid-template-columns:minmax(150px,.78fr) minmax(520px,2.2fr) minmax(150px,.78fr)!important;
+  grid-template-rows:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:clamp(10px,1.4vw,22px)!important;
+  padding:clamp(10px,1.5vw,24px)!important;
+  align-items:stretch!important;
+  overflow:hidden!important;
+}
+
+.shell-tv .display-stage:not(:has(.display-lobby))>.display-pool,
+.shell-display .display-stage:not(:has(.display-lobby))>.display-pool{
+  grid-column:2!important;
+  grid-row:1/3!important;
+  position:relative!important;
+  inset:auto!important;
+  transform:none!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:none!important;
+  max-height:none!important;
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  grid-template-rows:repeat(5,minmax(0,1fr))!important;
+  gap:clamp(8px,1vw,16px)!important;
+  align-items:center!important;
+  justify-items:center!important;
+  align-content:stretch!important;
+  padding:clamp(58px,7vh,86px) clamp(28px,3vw,56px) clamp(24px,3vh,42px)!important;
+  overflow:hidden!important;
+  z-index:2!important;
+}
+
+.shell-tv .display-stage:not(:has(.display-lobby))>.display-pool>.token,
+.shell-display .display-stage:not(:has(.display-lobby))>.display-pool>.token{
+  position:relative!important;
+  inset:auto!important;
+  left:auto!important;
+  top:auto!important;
+  transform:none!important;
+  animation:none!important;
+  width:clamp(40px,4.8vw,78px)!important;
+  height:clamp(40px,4.8vw,78px)!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  margin:0!important;
+  border-radius:clamp(10px,1vw,18px)!important;
+  background:var(--bone)!important;
+  color:var(--ink)!important;
+  display:grid!important;
+  place-items:center!important;
+  font-size:clamp(1.05rem,2.1vw,2rem)!important;
+  line-height:1!important;
+  font-weight:1000!important;
+  opacity:1!important;
+  box-shadow:0 clamp(3px,.45vw,7px) 0 rgba(37,24,26,.45)!important;
+}
+
+.shell-tv .display-stage:not(:has(.display-lobby))>.display-pool>.token.wild,
+.shell-display .display-stage:not(:has(.display-lobby))>.display-pool>.token.wild{
+  background:#d28770!important;
+}
+
+.shell-tv .display-stage>.corners,
+.shell-display .display-stage>.corners{
+  position:relative!important;
+  inset:auto!important;
+  display:grid!important;
+  grid-column:1/4!important;
+  grid-row:1/3!important;
+  grid-template-columns:minmax(150px,.78fr) minmax(520px,2.2fr) minmax(150px,.78fr)!important;
+  grid-template-rows:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:clamp(10px,1.4vw,22px)!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  z-index:3!important;
+  pointer-events:none!important;
+}
+
+.shell-tv .display-stage>.corners .corner,
+.shell-display .display-stage>.corners .corner{
+  position:relative!important;
+  inset:auto!important;
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  min-height:0!important;
+  max-height:100%!important;
+  overflow:hidden!important;
+  padding:clamp(8px,1vw,14px)!important;
+  font-size:clamp(.72rem,1.05vw,1rem)!important;
+}
+
+@media(max-width:1100px){
+  .shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)),
+  .shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)),
+  .shell-tv .display-stage>.corners,
+  .shell-display .display-stage>.corners{
+    grid-template-columns:minmax(108px,.7fr) minmax(390px,2.2fr) minmax(108px,.7fr)!important;
+    gap:8px!important;
+  }
+  .shell-tv .display-stage:not(:has(.display-lobby))>.display-pool,
+  .shell-display .display-stage:not(:has(.display-lobby))>.display-pool{
+    gap:clamp(5px,1vw,10px)!important;
+    padding:48px 20px 18px!important;
+  }
+  .shell-tv .display-stage:not(:has(.display-lobby))>.display-pool>.token,
+  .shell-display .display-stage:not(:has(.display-lobby))>.display-pool>.token{
+    width:clamp(32px,5vw,58px)!important;
+    height:clamp(32px,5vw,58px)!important;
+    font-size:clamp(.85rem,1.7vw,1.35rem)!important;
+  }
+}
+
 
 /* TBLive 1.30 TV create density: shared setup semantics, bounded TV adaptation. */
 .setup-modal-tv{
