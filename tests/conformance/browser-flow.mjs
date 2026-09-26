@@ -9,7 +9,7 @@ try {
   await tv.goto(base + '/tv', { waitUntil: 'networkidle' });
   await tv.getByRole('button', { name: 'Continue' }).click();
   await tv.getByRole('button', { name: 'Open lobby' }).click();
-  await tv.waitForURL(/\\/tv\\/[A-Z0-9]{4}$/);
+  await tv.waitForURL(url => new RegExp('^/tv/[A-Z0-9]{4}$').test(url.pathname));
   const code = new URL(tv.url()).pathname.split('/').pop();
   assert.match(code, /^[A-Z0-9]{4}$/);
 
