@@ -8,7 +8,7 @@ This is the first controlled Grabble migration from the original presentation mo
 
 The migration does not change:
 
-- TBLive contract 1.29 canonical routes;
+- TBLive contract 1.30 canonical routes;
 - Durable Object room authority;
 - WebSocket transport;
 - player identity or reconnect behaviour;
