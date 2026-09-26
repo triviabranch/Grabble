@@ -30,6 +30,7 @@ export default { async fetch(request, env) {
     const response = await env.ADMIN.get(env.ADMIN.idFromName('global')).fetch('https://admin/rooms'), data = await response.json();
     return Response.json({ rooms: (data.rooms || []).map(r => ({ ...r, gameId: 'grabble', gameName: 'Grabble', createdAt: r.createdAt, phase: r.phase || 'lobby', mode: r.mode || 'hosted' })) });
   }
+  if (p[0] === 'api' && p[1] === 'admin' && p[2] === 'test-runs' && (request.method === 'GET' || request.method === 'POST')) return env.ADMIN.get(env.ADMIN.idFromName('global')).fetch('https://admin/test-runs', { method: request.method, headers: request.headers, body: request.method === 'POST' ? request.body : undefined });
   if (p[0] === 'api' && p[1] === 'admin' && p[2] === 'games' && request.method === 'GET') return Response.json({ games: [{ id: 'grabble', name: 'Grabble', status: 'online', rooms: 0, capabilities: ['dictionary', 'room-kill', 'hostless-tv', 'html-surfaces'] }] });
   if (p[0] === 'api' && p[1] === 'admin' && p[2] === 'config' && (request.method === 'GET' || request.method === 'POST')) return env.ADMIN.get(env.ADMIN.idFromName('global')).fetch('https://admin/config', { method: request.method, headers: request.headers, body: request.method === 'POST' ? request.body : undefined });
   if (p[0] === 'api' && p[1] === 'admin' && p[2] === 'compare' && request.method === 'GET') {
