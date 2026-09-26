@@ -21,6 +21,12 @@ try {
   await tv.getByText('Ash', { exact: true }).waitFor();
   await tv.waitForTimeout(1000);
   await tv.locator('#start').evaluate(button => button.click());
+  await tv.waitForTimeout(250);
+  console.log('TV after start:', await tv.evaluate(() => ({
+    text: document.body.innerText,
+    socketReadyState: window.GrabbleTransport?.getSocket?.()?.readyState ?? null,
+    startButtons: document.querySelectorAll('#start').length,
+  })));
   await tv.locator('.display-pool').waitFor({ state: 'visible', timeout: 10000 });
   await new Promise(resolve => setTimeout(resolve, 34000));
   await tv.getByText(/TIME.?S UP|Leaderboard|Competition complete|Round complete/i).first().waitFor({ timeout: 10000 });
