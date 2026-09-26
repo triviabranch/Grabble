@@ -1,10 +1,10 @@
 {
-  "contractVersion": "1.23",
+  "contractVersion": "1.29",
   "capabilities": {
     "mobilePlay": true,
     "playableWithoutSharedScreen": true,
     "hostlessTv": true,
-    "tvDepth": "companion",
+    "tvDepth": "full",
     "tvCreatesRoom": true,
     "hostedDisplay": true,
     "professionalHostMode": false
