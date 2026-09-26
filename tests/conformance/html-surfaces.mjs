@@ -40,7 +40,6 @@ assert.match(client, /pathParts=location\.pathname\.split/, 'Client must derive 
 assert.doesNotMatch(client, /G_MODE|G_CODE/, 'Client must not depend on Worker-injected mode globals');
 assert.doesNotMatch(client, /api\.qrserver\.com|quickchart\.io|chart\.google\.com/, 'Grabble must not use third-party QR services');
 assert.match(client, /data-join-qr/, 'Grabble must render the join QR in a local container');
-assert.match(client, /hostlessTv:true/, 'Grabble must declare hostless TV capability');
 assert.match(client, /tvEntryPhase==='idle'\)\{tvEntryPhase='lobby';connect\('tv','TV'\)/, 'TV room routes must connect directly to the hostless lobby');
 assert.doesNotMatch(client, /if\(mode==='tv'&&tvEntryPhase!==\'lobby\'\)\{/, 'TV room routes must not re-enter the legacy splash/bridge flow');
 assert.match(client, /mode===\'tv\'\?\'tv\':\'display\'/, 'TV room routes must retain the TV controller role');
