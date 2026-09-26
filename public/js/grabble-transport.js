@@ -2,6 +2,8 @@
 (function () {
   let config = {},
     socket = null,
+    connection = null,
+    reconnectTimer = null,
     queuedAction = null,
     lastSeq = 0;
   const configure = (next) => {
@@ -10,10 +12,18 @@
   const envelope = (payload) => ({ v: 1, type: "action", requestId: crypto.randomUUID(), payload });
   const send = (action) => {
     if (socket?.readyState === 1) socket.send(JSON.stringify(envelope(action)));
-    else if (action.type === "start" || action.type === "next")
+    else if (action.type === "start" || action.type === "next" || action.type === "restart") {
       queuedAction = action;
+      if ((!socket || socket.readyState > 1) && connection && !reconnectTimer) {
+        reconnectTimer = setTimeout(() => {
+          reconnectTimer = null;
+          connect(connection.role, connection.name);
+        }, 50);
+      }
+    }
   };
   const connect = (role, name) => {
+    connection = { role, name };
     const code = config.code || "",
       mode = config.mode || "play";
     const playerToken =
@@ -85,19 +95,16 @@
       const current = config.getState?.();
       if (
         !config.isLeaving?.() &&
-        mode === "play" &&
         code &&
         current?.phase !== "final" &&
-        current?.phase !== "closed"
+        current?.phase !== "closed" &&
+        connection &&
+        !reconnectTimer
       )
-        setTimeout(
-          () =>
-            connect(
-              "play",
-              name || localStorage.getItem("grabble-name:" + code) || "Player",
-            ),
-          500,
-        );
+        reconnectTimer = setTimeout(() => {
+          reconnectTimer = null;
+          connect(connection.role, connection.name);
+        }, 500);
     };
   };
   document.addEventListener("visibilitychange", () => {
