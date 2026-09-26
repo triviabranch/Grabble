@@ -1182,6 +1182,51 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
   min-width:5rem;
   text-align:right;
 }
+
+/* Player rails must show the complete submitted word.  They are deliberately
+   compact, but never truncate or hide tiles when a word is longer than the
+   available rail width. */
+.shell-tv .display-stage > .corners .corner .player-score-line,
+.shell-display .display-stage > .corners .corner .player-score-line{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  min-width:0!important;
+  width:100%!important;
+}
+.shell-tv .display-stage > .corners .corner .score-line-word,
+.shell-display .display-stage > .corners .corner .score-line-word{
+  display:flex!important;
+  flex:0 1 100%!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:clamp(2px,.28vw,5px)!important;
+  min-width:0!important;
+  max-width:100%!important;
+  overflow:visible!important;
+  white-space:normal!important;
+}
+.shell-tv .display-stage > .corners .corner .score-line-word .score-tile,
+.shell-display .display-stage > .corners .corner .score-line-word .score-tile{
+  flex:0 0 clamp(16px,1.45vw,25px)!important;
+  width:clamp(16px,1.45vw,25px)!important;
+  height:clamp(16px,1.45vw,25px)!important;
+  max-width:none!important;
+  max-height:none!important;
+  font-size:clamp(.58rem,.82vw,.82rem)!important;
+}
+.shell-tv .display-stage > .corners .corner .player-score-line > span:last-child,
+.shell-display .display-stage > .corners .corner .player-score-line > span:last-child{
+  flex:1 1 100%!important;
+  min-width:0!important;
+  overflow:visible!important;
+  white-space:normal!important;
+  line-height:1.2!important;
+}
 @media(max-width:700px){
   .score-header,
   .score-row{
