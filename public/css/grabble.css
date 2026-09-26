@@ -553,7 +553,6 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
   .setup-modal-tv .setup-footer button{min-width:120px!important}
 }
 
-
 /* TBLive 1.29 TV create surface: 16:9, remote-friendly and TV-readable. */
 .setup-modal-tv{
   padding:40px!important;
@@ -1091,3 +1090,13 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
     border-radius:24px!important;
   }
 }
+
+/* TV create: the route is the bridge; do not add a second landing card. */
+.shell-tv .tv-create-home{display:none!important}
+.setup-modal-tv .setup-card{
+  width:min(980px,calc(100vw - 56px))!important;
+  height:min(610px,calc(100dvh - 40px))!important;
+  min-height:0!important;
+  max-height:calc(100dvh - 40px)!important;
+}
+.setup-modal-tv .setup-page-actions{justify-content:flex-end!important}
