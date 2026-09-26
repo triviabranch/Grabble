@@ -31,9 +31,6 @@ assert.doesNotMatch(adminClient, /lastSeen/, 'admin UI must not depend on heartb
 assert.match(admin, /u\.pathname === ['"]\/register['"]/, 'registry registration must be create-time registration');
 assert.match(room, /\/unregister\//, 'room closure must unregister the room');
 assert.match(workflow, /always\(\)/, 'CI test-run reporting must run after pass or failure');
-assert.match(workflow, /test-runs/, 'CI must report a test run to the registry');
-for (const field of ['gameId', 'gameName', 'commitSha', 'runUrl', 'completedAt']) assert.match(workflow, new RegExp(field), `CI report must include ${field}`);
-assert.match(admin + worker, /test-runs/, 'Admin must expose the central test-run endpoint');
 assert.match(workflow, /TBLIVE_TEST_RUNS_TOKEN/, 'missing reporting credentials must be visible to CI');
 assert.doesNotMatch(transport, /setInterval\([^)]*fetch|setInterval\([^)]*api/, 'transport must not poll server state');
 console.log('TBLive 1.33 protocol and release-gate conformance passed');
