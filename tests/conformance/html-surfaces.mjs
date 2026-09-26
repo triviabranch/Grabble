@@ -23,6 +23,9 @@ for (const surface of surfaces) {
 }
 
 const worker = (await read('src/index.js')) + (await read('src/worker.js')) + (await read('src/room.js')) + (await read('src/admin.js'));
+const index = await read('src/index.js');
+assert.ok(index.length < 1000, 'Worker entrypoint must remain a thin adapter');
+assert.match(await read('src/worker.js'), /import \{ registryCall \} from ['"]\.\/shared\.js['"];/, 'Worker router must import shared registry helpers');
 const wrangler = await read('wrangler.toml');
 assert.doesNotMatch(worker, /const CSS=`|const CLIENT=`|function page\(/, 'Worker must not contain the presentation monolith');
 assert.match(worker, /p\.length===2\)return serveSurface\(env,request,p\[0\]\)/, 'Worker must route canonical room surfaces only with a room code');

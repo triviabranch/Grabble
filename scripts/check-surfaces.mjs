@@ -22,6 +22,8 @@ for (const [name, file] of shells) {
 }
 
 const client = fs.readFileSync('public/js/grabble-client.js', 'utf8');
+const index = fs.readFileSync('src/index.js', 'utf8');
+const worker = fs.readFileSync('src/worker.js', 'utf8');
 const create = fs.readFileSync('public/js/grabble-create.js', 'utf8');
 const transport = fs.readFileSync('public/js/grabble-transport.js', 'utf8');
 const admin = fs.readFileSync('public/js/grabble-admin.js', 'utf8');
@@ -31,6 +33,8 @@ new Function(create);
 new Function(transport);
 new Function(admin);
 new Function(player);
+if (index.length > 1000) throw new Error('Worker entrypoint must remain a thin adapter');
+if (!worker.includes("import { registryCall } from './shared.js';")) throw new Error('Worker router must import shared registry helpers');
 for (const required of ['GrabbleCreate', 'tvHome', 'openCreateFlow']) {
   if (!create.includes(required)) throw new Error('create controller: missing ' + required);
 }
