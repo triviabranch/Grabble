@@ -34,4 +34,5 @@ assert.match(workflow, /always\(\)/, 'CI test-run reporting must run after pass 
 assert.match(workflow, /TBLIVE_TEST_RUNS_TOKEN/, 'missing reporting credentials must be visible to CI');
 assert.doesNotMatch(transport, /setInterval\([^)]*fetch|setInterval\([^)]*api/, 'transport must not poll server state');
 console.log('TBLive 1.33 protocol and release-gate conformance passed');
-\nassert.match(workflow, /browser-flow/, 'CI must run the hostless browser flow');\n
+
+assert.match(workflow, /browser-flow/, 'CI must run the hostless browser flow');
