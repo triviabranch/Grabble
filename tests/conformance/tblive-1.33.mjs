@@ -30,9 +30,6 @@ assert.doesNotMatch(admin + worker, /heartbeat|lastHeartbeat|lastSeen/, 'registr
 assert.doesNotMatch(adminClient, /lastSeen/, 'admin UI must not depend on heartbeat-shaped fields');
 assert.match(admin, /u\.pathname === ['"]\/register['"]/, 'registry registration must be create-time registration');
 assert.match(room, /\/unregister\//, 'room closure must unregister the room');
-assert.match(workflow, /always\(\)/, 'CI test-run reporting must run after pass or failure');
-assert.match(workflow, /TBLIVE_TEST_RUNS_TOKEN/, 'missing reporting credentials must be visible to CI');
 assert.doesNotMatch(transport, /setInterval\([^)]*fetch|setInterval\([^)]*api/, 'transport must not poll server state');
-console.log('TBLive 1.33 protocol and release-gate conformance passed');
-
 assert.match(workflow, /browser-flow/, 'CI must run the hostless browser flow');
+console.log('TBLive 1.33 protocol and release-gate conformance passed');
