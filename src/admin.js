@@ -4,21 +4,6 @@ export class GrabbleAdmin {
   constructor(state, env) { this.state = state; this.env = env; }
   async fetch(req) {
     const u = new URL(req.url);
-    if (u.pathname === '/test-runs' && (req.method === 'GET' || req.method === 'POST')) {
-      const configured = String(this.env.TBLIVE_REGISTRY_TOKEN || '');
-      if (!configured || req.headers.get('authorization') !== 'Bearer ' + configured) return Response.json({ error: 'UNAUTHORISED' }, { status: 401 });
-      if (req.method === 'POST') {
-        const x = await req.json();
-        const required = ['gameId', 'gameName', 'runId', 'workflow', 'branch', 'commitSha', 'runUrl', 'status', 'startedAt', 'completedAt', 'contractVersion'];
-        if (required.some(key => !x[key]) || !['success', 'failure', 'cancelled'].includes(x.status)) return Response.json({ error: 'INVALID_TEST_RUN' }, { status: 400 });
-        const key = 'test-run:' + String(x.gameId) + ':' + String(x.runId);
-        await this.state.storage.put(key, { ...x, receivedAt: Date.now() });
-        return Response.json({ ok: true });
-      }
-      const entries = await this.state.storage.list({ prefix: 'test-run:' });
-      const runs = [...entries.values()].sort((a, b) => String(b.completedAt).localeCompare(String(a.completedAt)));
-      return Response.json({ runs, latestByGame: Object.fromEntries(runs.reduce((map, run) => map.has(run.gameId) ? map : map.set(run.gameId, run), new Map())) });
-    }
     if (u.pathname === '/config' && req.method === 'GET') return Response.json({ dictionaryProvider: (await this.state.storage.get('config:dictionaryProvider')) || 'datamuse' });
     if (u.pathname === '/config' && req.method === 'POST') {
       let x = {}; try { x = await req.json(); } catch {}
