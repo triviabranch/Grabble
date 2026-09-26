@@ -34,7 +34,7 @@ The former server monolith is split into focused modules:
 - `src/admin.js` — admin Durable Object and room metadata;
 - `src/shared.js` — shared server helpers and constants.
 
-On the browser side, `public/js/grabble-create.js` owns the shared create/home flow and `public/js/grabble-client.js` owns the remaining room/game runtime. The latter is still the next extraction target; this change intentionally preserves its room protocol and surface behavior.
+On the browser side, `public/js/grabble-create.js` owns the shared create/home flow, `public/js/grabble-transport.js` owns room WebSocket/token/reconnect behavior, and `public/js/grabble-admin.js` owns the admin controller. `public/js/grabble-client.js` now owns the remaining room/game rendering and player interaction; this change intentionally preserves its room protocol and surface behavior.
 
 ## Registry and administration
 
