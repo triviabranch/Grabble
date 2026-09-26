@@ -29,10 +29,18 @@ assert.match(worker, /p\[2\]==='rooms'/, 'Worker must expose the TBLive room reg
 assert.match(worker, /p\[2\]==='games'/, 'Worker must expose the registered games contract');
 assert.match(worker, /kill-all/, 'Worker must expose the global kill-all contract');
 
+const capabilities = JSON.parse(await read('tblive.capabilities.json'));
+assert.equal(capabilities.contractVersion, '1.29', 'Grabble must declare TBLive contract 1.29');
+assert.equal(capabilities.capabilities.hostlessTv, true, 'Grabble must expose hostless TV');
+assert.equal(capabilities.capabilities.tvCreatesRoom, true, 'TV must be able to create a room');
+
 const client = await read('public/js/grabble-client.js');
 assert.match(client, /pathParts=location\.pathname\.split/, 'Client must derive its surface from the canonical path');
 assert.doesNotMatch(client, /G_MODE|G_CODE/, 'Client must not depend on Worker-injected mode globals');
 assert.match(client, /hostlessTv:true/, 'Grabble must declare hostless TV capability');
+assert.match(client, /tvEntryPhase==='idle'\)\{tvEntryPhase='lobby';connect\('tv','TV'\)/, 'TV room routes must connect directly to the hostless lobby');
+assert.doesNotMatch(client, /if\(mode==='tv'&&tvEntryPhase!==\'lobby\'\)\{/, 'TV room routes must not re-enter the legacy splash/bridge flow');
+assert.match(client, /mode===\'tv\'\?\'tv\':\'display\'/, 'TV room routes must retain the TV controller role');
 
 const display = await read('public/surfaces/display.html');
 const tv = await read('public/surfaces/tv.html');
