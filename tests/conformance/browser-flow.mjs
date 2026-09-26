@@ -22,7 +22,7 @@ try {
   await tv.getByRole('button', { name: 'Start game' }).click();
   await tv.locator('.display-pool').waitFor({ state: 'visible', timeout: 10000 });
   await new Promise(resolve => setTimeout(resolve, 34000));
-  await tv.getByText(/TIME.?S UP|Leaderboard|Competition complete|Round complete/i).waitFor({ timeout: 10000 });
+  await tv.getByText(/TIME.?S UP|Leaderboard|Competition complete|Round complete/i).first().waitFor({ timeout: 10000 });
   await browser.close();
   console.log('TBLive 1.33 hostless browser flow passed');
 } catch (error) {
