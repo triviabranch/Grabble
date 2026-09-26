@@ -59,4 +59,7 @@ assert.match(css, /setup-modal-tv[\\s\\S]*setup-footer/, 'TV create flow must ha
 assert.match(client, /play-again/, 'In-room replay action must exist');
 assert.match(client, /TBLiveQR/, 'QR rendering must use the canonical local TBLive renderer');
 
+
+assert.match(css, /TBLive 1\\.30 TV create density/, 'TV create flow must use the 1.30 density patch');
+assert.match(css, /aspect-ratio:auto!important/, 'TV create card must not force a viewport-breaking aspect ratio');
 console.log('TBLive 1.30 static surface conformance passed');
