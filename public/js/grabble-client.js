@@ -16,9 +16,11 @@
   const connect = (role, name) => window.GrabbleTransport.connect(role, name);
   document.addEventListener("click", (event) => {
     const start = event.target.closest?.("#start");
-    if (start && (mode === "tv" || mode === "host") && state?.phase === "lobby") {
+    if (start && (mode === "tv" || mode === "host")) {
       event.preventDefault();
-      send({ type: "start" });
+      if (state?.phase === "lobby") send({ type: "start" });
+      else if (state?.phase === "results") send({ type: "next" });
+      else if (state?.phase === "final") send({ type: "restart" });
     }
   }, true);
   function shell(x) {
