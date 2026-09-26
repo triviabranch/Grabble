@@ -553,6 +553,7 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
   .setup-modal-tv .setup-footer button{min-width:120px!important}
 }
 
+
 /* TBLive 1.29 TV create surface: 16:9, remote-friendly and TV-readable. */
 .setup-modal-tv{
   padding:40px!important;
@@ -1091,12 +1092,104 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
   }
 }
 
-/* TV create: the route is the bridge; do not add a second landing card. */
-.shell-tv .tv-create-home{display:none!important}
-.setup-modal-tv .setup-card{
-  width:min(980px,calc(100vw - 56px))!important;
-  height:min(610px,calc(100dvh - 40px))!important;
-  min-height:0!important;
-  max-height:calc(100dvh - 40px)!important;
+/* TV pool correction: the heading and countdown are overlays, never grid
+   children. Keeping them out of flow guarantees that every live pool gets
+   its full six-column by five-row letter layout. */
+.shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)) > .display-pool,
+.shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)) > .display-pool{
+  grid-auto-flow:row!important;
 }
-.setup-modal-tv .setup-page-actions{justify-content:flex-end!important}
+.shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)) > .display-pool > .display-pool-title,
+.shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)) > .display-pool > .display-pool-title,
+.shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)) > .display-pool > .pool-timer,
+.shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)) > .display-pool > .pool-timer{
+  position:absolute!important;
+}
+.shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)) > .display-pool > .display-pool-title,
+.shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)) > .display-pool > .display-pool-title{
+  top:clamp(18px,3vh,30px)!important;
+  font-size:clamp(.8rem,1.15vw,1.15rem)!important;
+}
+.shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)) > .display-pool > .token,
+.shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)) > .display-pool > .token{
+  width:clamp(52px,5.4vw,92px)!important;
+  height:clamp(52px,5.4vw,92px)!important;
+  font-size:clamp(1.35rem,2.45vw,2.35rem)!important;
+}
+.shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)),
+.shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)){
+  flex:0 0 min(760px,calc(100dvh - 128px))!important;
+  height:min(760px,calc(100dvh - 128px))!important;
+  min-height:min(420px,calc(100dvh - 128px))!important;
+}
+.shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)) > .display-pool > .token,
+.shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)) > .display-pool > .token{
+  aspect-ratio:1!important;
+  align-self:center!important;
+  justify-self:center!important;
+  max-height:none!important;
+}
+@media(min-width:1101px){
+  .shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)),
+  .shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)),
+  .shell-tv .display-stage > .corners,
+  .shell-display .display-stage > .corners{
+    grid-template-columns:minmax(170px,.62fr) minmax(600px,3fr) minmax(170px,.62fr)!important;
+  }
+  .shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)) > .display-pool,
+  .shell-display .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)) > .display-pool{
+    padding:clamp(64px,8vh,92px) clamp(36px,4vw,76px) clamp(30px,4vh,48px)!important;
+    gap:clamp(10px,1.15vw,18px)!important;
+  }
+}
+
+/* Shared-screen player rails are information overlays, not dark cards. */
+.shell-tv .display-stage > .corners .corner,
+.shell-display .display-stage > .corners .corner{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:clamp(4px,.65vw,10px)!important;
+  border-radius:0!important;
+}
+.shell-tv .display-stage > .corners .corner .display-player-head,
+.shell-display .display-stage > .corners .corner .display-player-head{
+  text-shadow:0 2px 5px rgba(37,24,26,.7);
+}
+.shell-tv .display-stage > .corners .corner .player-score-line,
+.shell-display .display-stage > .corners .corner .player-score-line{
+  margin-top:clamp(3px,.4vw,6px)!important;
+  text-shadow:0 2px 5px rgba(37,24,26,.7);
+}
+
+/* Keep leaderboard headings on the same fixed columns as their values. */
+.score-header,
+.score-row{
+  grid-template-columns:2rem minmax(0,1fr) minmax(220px,auto) 5rem 5rem!important;
+}
+.score-header span:nth-child(3){text-align:left!important}
+.score-header span:nth-child(4),
+.score-header strong{text-align:right!important}
+.score-row .score-word-tiles{
+  justify-content:flex-start!important;
+  min-width:0;
+  max-width:100%;
+  overflow:hidden;
+}
+.score-row .round-score,
+.score-row .total-score{
+  width:5rem;
+  min-width:5rem;
+  text-align:right;
+}
+@media(max-width:700px){
+  .score-header,
+  .score-row{
+    grid-template-columns:1.4rem minmax(0,1fr) minmax(96px,auto) 3.5rem 3.5rem!important;
+  }
+  .score-row .round-score,
+  .score-row .total-score{
+    width:3.5rem;
+    min-width:3.5rem;
+  }
+}
