@@ -26,7 +26,7 @@ The Worker maps the clean TBLive routes to these shells. The public routes remai
 
 The Worker has explicit mappings for `/`, `/play/[CODE]`, `/display/[CODE]`, `/tv/[CODE]`, `/host/[CODE]` and `/admin`. Unknown paths return 404; they never fall back to the player surface.
 
-The migration preserves the existing Durable Object room, WebSocket messages, tokens, lifecycle and scoring behaviour. The central room registry contract is also exposed through `/api/admin/rooms`, `/api/admin/games`, the canonical room-kill route and `kill-all`, so the standalone Grabble Worker can be controlled by the central TBLive Admin without inventing another room model.
+The migration preserves the existing Durable Object room, WebSocket messages, server-issued player reconnect tokens, lifecycle and scoring behaviour. The central room registry contract is also exposed through `/api/admin/rooms`, `/api/admin/games`, `/api/tblive/rooms/[CODE]/kill` and the admin kill-all path, so the standalone Grabble Worker can be controlled by the central TBLive Admin without inventing another room model. Registry registration is advisory to room creation; a registry outage must never prevent a game from opening.
 
 ## Fire TV and browser compatibility
 
@@ -39,7 +39,7 @@ The `/tv/[CODE]` shell is a genuine TV surface, not an alias for `/display/[CODE
 - server-controlled countdown and progression;
 - results and return/play-again actions.
 
-A surface migration is not complete until the affected surface passes the TBLive conformance checks and the relevant device/browser smoke tests.
+All QR-bearing surfaces use the local canonical TBLive QR module and target `/play/[CODE]`; no third-party QR service is used. A surface migration is not complete until the affected surface passes the TBLive conformance checks and the relevant device/browser smoke tests.
 
 The dictionary is intentionally configurable through the game adapter and cached by the admin Durable Object before public play. Game-specific diagnostics remain an adapter capability; the production operational surface is the central TBLive Admin.
 
