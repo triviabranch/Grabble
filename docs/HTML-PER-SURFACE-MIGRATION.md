@@ -8,7 +8,7 @@ This is the first controlled Grabble migration from the original presentation mo
 
 The migration does not change:
 
-- canonical routes;
+- TBLive contract 1.29 canonical routes;
 - Durable Object room authority;
 - WebSocket transport;
 - player identity or reconnect behaviour;
@@ -49,9 +49,9 @@ Room status is held in the Grabble Admin Durable Object as operational metadata.
 
 The hostless `/tv/[CODE]` path now follows the TBLive entry rhythm:
 
-`TV create modal → room creation → 2.5 second Grabble splash → lightweight QR join bridge → live QR lobby → launch/countdown → game → results continuation`.
+`TV create modal → room creation → live QR lobby → launch/countdown → game → results continuation`.
 
-The TV surface has a dedicated adapter, a TriviaBranch return control, centred Grabble wordmark, and no top-right `TV` label. The hostless room remains authoritative in the existing room/WebSocket implementation.
+The TV surface has a dedicated adapter, a TriviaBranch return control, centred Grabble wordmark, and no top-right `TV` label. After creation it opens `/tv/[CODE]` directly as the hostless room controller; it does not show a second splash, join bridge or host QR. The hostless room remains authoritative in the existing room/WebSocket implementation.
 
 ## Next extraction phase
 
