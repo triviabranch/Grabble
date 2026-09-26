@@ -22,3 +22,19 @@ jobs:
           node-version: 20
       - run: node tests/conformance/html-surfaces.mjs
       - run: node tests/conformance/tblive-1.33.mjs
+
+  browser-flow:
+    needs: static-surfaces
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Start local Worker
+        run: npx --yes wrangler@4.141.0 dev --local --port 8787 > /tmp/grabble-wrangler.log 2>&1 &
+      - name: Wait for local Worker
+        run: for i in $(seq 1 30); do curl --fail http://127.0.0.1:8787/ && exit 0; sleep 1; done; cat /tmp/grabble-wrangler.log; exit 1
+      - run: BASE_URL=http://127.0.0.1:8787 node tests/conformance/browser-flow.mjs
