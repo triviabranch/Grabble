@@ -2,12 +2,14 @@
 (function () {
   let config = {},
     socket = null,
-    queuedAction = null;
+    queuedAction = null,
+    lastSeq = 0;
   const configure = (next) => {
     config = next || {};
   };
+  const envelope = (payload) => ({ v: 1, type: "action", requestId: crypto.randomUUID(), payload });
   const send = (action) => {
-    if (socket?.readyState === 1) socket.send(JSON.stringify(action));
+    if (socket?.readyState === 1) socket.send(JSON.stringify(envelope(action)));
     else if (action.type === "start" || action.type === "next")
       queuedAction = action;
   };
@@ -15,7 +17,7 @@
     const code = config.code || "",
       mode = config.mode || "play";
     const playerToken =
-      role === "play" ? localStorage.getItem("grabble-player-token") || "" : "";
+      role === "play" ? localStorage.getItem("grabble-player-token:" + config.code) || "" : "";
     const controlToken =
       role === "tv"
         ? localStorage.getItem("grabble-tv-token") || ""
@@ -39,7 +41,7 @@
     );
     socket.onopen = () => {
       if (queuedAction) {
-        socket.send(JSON.stringify(queuedAction));
+          socket.send(JSON.stringify(envelope(queuedAction)));
         queuedAction = null;
       }
     };
@@ -51,15 +53,20 @@
         return;
       }
       if (message.type === "hello") {
-        config.onHello?.(message, role);
-        if (role === "play" && message.playerToken)
-          localStorage.setItem("grabble-player-token", message.playerToken);
+        const hello = message.payload || message;
+        config.onHello?.({ ...message, ...hello }, role);
+        if (role === "play" && hello.playerToken)
+          localStorage.setItem("grabble-player-token:" + config.code, hello.playerToken);
       }
       if (message.type === "left") {
         config.onLeft?.();
         return;
       }
-      if (message.type === "state") config.onState?.(message);
+      if (message.type === "snapshot") {
+        if (Number.isFinite(message.seq) && message.seq <= lastSeq) return;
+        lastSeq = Number(message.seq || lastSeq);
+        config.onState?.({ ...message.payload, type: "state", v: message.v, seq: message.seq });
+      }
     };
     socket.onclose = () => {
       const current = config.getState?.();
@@ -74,7 +81,7 @@
           () =>
             connect(
               "play",
-              name || localStorage.getItem("grabble-name") || "Player",
+              name || localStorage.getItem("grabble-name:" + code) || "Player",
             ),
           500,
         );
@@ -87,7 +94,7 @@
       config.code &&
       (!socket || socket.readyState > 1)
     )
-      connect("play", localStorage.getItem("grabble-name") || "Player");
+      connect("play", localStorage.getItem("grabble-name:" + config.code) || "Player");
   });
   window.GrabbleTransport = {
     configure,

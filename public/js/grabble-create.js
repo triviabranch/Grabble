@@ -66,7 +66,7 @@
       const name = needsName
         ? modal.querySelector("#name").value.trim() || "Player"
         : "";
-      if (needsName) localStorage.setItem("grabble-name", name);
+      if (needsName) localStorage.setItem("grabble-pending-name", name);
       const btn = modal.querySelector("#setup-next");
       btn.disabled = true;
       btn.textContent = "Creating…";

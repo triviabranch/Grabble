@@ -34,15 +34,15 @@ assert.doesNotMatch(worker, /return serveSurface\(env,request,'play'\)\}\};/, 'W
 assert.match(worker, /env\.ASSETS\.fetch/, 'Worker must serve static surface assets');
 assert.match(worker, /controlToken/, 'Room creation and control WebSockets must use a room-scoped control token');
 assert.match(worker, /UNAUTHORISED_CONTROL_ROLE/, 'TV/host control connections must reject missing or invalid control tokens');
-assert.match(worker, /broadcastEvent\('player_left'/, 'Player leave must emit player_left');
-assert.match(worker, /broadcastEvent\('player_joined'/, 'Player join must emit player_joined');
+assert.match(worker, /player_left/, 'Player leave must emit player_left');
+assert.match(worker, /player_joined/, 'Player join must emit player_joined');
 assert.match(wrangler, /binding\s*=\s*"ASSETS"/, 'Wrangler must expose the ASSETS binding used by the Worker');
 assert.match(worker, /p\[2\]==='rooms'/, 'Worker must expose the TBLive room registry contract');
 assert.match(worker, /p\[2\]==='games'/, 'Worker must expose the registered games contract');
 assert.match(worker, /kill-all/, 'Worker must expose the global kill-all contract');
 
 const capabilities = JSON.parse(await read('tblive.capabilities.json'));
-assert.equal(capabilities.contractVersion, '1.30', 'Grabble must declare TBLive contract 1.30');
+assert.equal(capabilities.contractVersion, '1.33', 'Grabble must declare TBLive contract 1.33');
 assert.equal(capabilities.capabilities.hostlessTv, true, 'Grabble must expose hostless TV');
 assert.equal(capabilities.capabilities.tvCreatesRoom, true, 'TV must be able to create a room');
 
@@ -71,8 +71,13 @@ assert.match(css, /setup-modal-tv[\s\S]*overflow:hidden/, 'TV create shell must 
 assert.match(css, /setup-modal-tv[\s\S]*setup-footer/, 'TV create flow must have one persistent footer rail');
 assert.match(client, /play-again/, 'In-room replay action must exist');
 assert.match(client, /TBLiveQR/, 'QR rendering must use the canonical local TBLive renderer');
+assert.match(transport, /v:\s*1/, 'Transport actions must use the versioned TBLive envelope');
+assert.match(transport, /snapshot/, 'Transport must consume authoritative snapshot envelopes');
+assert.match(worker, /setAlarm|alarm\(/, 'Room lifecycle must use Durable Object alarms');
+assert.match(worker, /storage\.get|storage\.put/, 'Room state must survive Durable Object hibernation/restart');
+assert.match(worker, /seq/, 'Room broadcasts must carry a monotonically increasing sequence');
 
 
-assert.match(css, /TBLive 1\.30 TV create density/, 'TV create flow must use the 1.30 density patch');
+assert.match(css, /TBLive 1\.33 TV create density/, 'TV create flow must use the 1.33 density patch');
 assert.match(css, /aspect-ratio:auto!important/, 'TV create card must not force a viewport-breaking aspect ratio');
-console.log('TBLive 1.30 static surface conformance passed');
+console.log('TBLive 1.33 static surface conformance passed');

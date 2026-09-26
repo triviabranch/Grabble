@@ -39,6 +39,7 @@ for (const required of ['GrabbleCreate', 'tvHome', 'openCreateFlow']) {
   if (!create.includes(required)) throw new Error('create controller: missing ' + required);
 }
 if (!/tvEntryPhase\s*=\s*["']idle["']/.test(client)) throw new Error('client: missing idle TV entry phase');
+if (!/contractVersion["']?\s*:\s*["']1\.33/.test(fs.readFileSync('tblive.capabilities.json', 'utf8'))) throw new Error('capabilities: contract must be 1.33');
 if (!/tv-back/.test(client)) throw new Error('client: missing TV back control');
 if (!/window\.GrabbleCreate/.test(client)) throw new Error('client: missing shared create controller');
 for (const forbidden of ["create('competition').then(x=>location.href='/tv/'", "<small>'+({play:'PLAYER',display:'DISPLAY',tv:'TV'"]) {
