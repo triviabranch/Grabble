@@ -38,10 +38,11 @@ jobs:
             exit 1
           fi
           status="$TEST_STATUS"
-          [ "$status" = "success" ] && status=passed
-          [ "$status" != "passed" ] && status=failed
+          [ "$status" = "success" ] && status=success
+          [ "$status" = "cancelled" ] && status=cancelled
+          [ "$status" != "success" ] && [ "$status" != "cancelled" ] && status=failure
           export REPORT_STATUS="$status"
           curl --fail-with-body -X POST "https://tblive.triviabranch.com/api/admin/test-runs" \
             -H "authorization: Bearer $TBLIVE_TEST_RUNS_TOKEN" \
             -H "content-type: application/json" \
-            --data "$(node -e 'console.log(JSON.stringify({game:"grabble",runId:process.env.GITHUB_RUN_ID,workflow:process.env.GITHUB_WORKFLOW,branch:process.env.GITHUB_REF_NAME,commit:process.env.GITHUB_SHA,status:process.env.REPORT_STATUS,startedAt:new Date().toISOString(),finishedAt:new Date().toISOString(),contractVersion:"1.33",testName:"TBLive 1.33 conformance",message:process.env.GITHUB_SERVER_URL+"/"+process.env.GITHUB_REPOSITORY+"/actions/runs/"+process.env.GITHUB_RUN_ID}))' )"
+            --data "$(node -e 'const now=new Date().toISOString(); console.log(JSON.stringify({gameId:"grabble",gameName:"Grabble",runId:process.env.GITHUB_RUN_ID,workflow:process.env.GITHUB_WORKFLOW,branch:process.env.GITHUB_REF_NAME,commitSha:process.env.GITHUB_SHA,runUrl:process.env.GITHUB_SERVER_URL+"/"+process.env.GITHUB_REPOSITORY+"/actions/runs/"+process.env.GITHUB_RUN_ID,status:process.env.REPORT_STATUS,startedAt:now,completedAt:now,contractVersion:"1.33",testName:"TBLive 1.33 conformance",message:"Static and protocol conformance workflow"}))' )"
