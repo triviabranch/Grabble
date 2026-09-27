@@ -23,9 +23,9 @@ try {
   await tv.locator('#start').click({ force: true });
   await tv.locator('.display-pool').waitFor({ state: 'visible', timeout: 10000 });
   await new Promise(resolve => setTimeout(resolve, 34000));
-  await tv.getByText(/TIME.?S UP|Leaderboard|Competition complete|Round complete/i).first().waitFor({ timeout: 10000 });
+  await tv.locator('.display-result-stage .time-up, .result-stage .time-up').first().waitFor({ state: 'visible', timeout: 10000 });
   await browser.close();
-  console.log('TBLive 1.33 hostless browser flow passed');
+  console.log('TBLive 1.34 hostless browser flow passed');
 } catch (error) {
   await browser.close();
   throw error;
