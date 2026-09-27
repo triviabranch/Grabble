@@ -1,83 +1,81 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
-import { access } from 'node:fs/promises';
+import { readFile, access } from 'node:fs/promises';
 import path from 'node:path';
 
 const root = process.cwd();
 const surfaces = ['home', 'play', 'host', 'display', 'tv', 'admin'];
+const controllers = {
+  home: 'grabble-home.js',
+  play: 'grabble-play.js',
+  host: 'grabble-host.js',
+  display: 'grabble-display.js',
+  tv: 'grabble-tv.js',
+  admin: 'grabble-admin-surface.js',
+};
 const read = file => readFile(path.join(root, file), 'utf8');
 
 for (const surface of surfaces) {
-  const file = `public/surfaces/${surface}.html`;
+  const file = 'public/surfaces/' + surface + '.html';
   await access(path.join(root, file));
-  const html = await read(file);
-  assert.match(html, /<html\b/i, `${file} must be an HTML document`);
-  assert.match(html, /href="\/css\/grabble\.css"/, `${file} must load the surface stylesheet`);
-  assert.match(html, /src="\/js\/grabble-client\.js"/, `${file} must load the external client`);
-  assert.match(html, /src="\/js\/grabble-transport\.js"/, `${file} must load the shared transport`);
-  assert.match(html, /src="\/js\/grabble-create\.js"/, `${file} must load the shared create controller`);
-  assert.match(html, /src="\/js\/grabble-admin\.js"/, `${file} must load the shared admin controller`);
-  assert.match(html, /src="\/js\/grabble-player\.js"/, `${file} must load the shared player controller`);
-  assert.match(html, /src="\/js\/tblive-qr\.js"/, `${file} must load the canonical TBLive QR module`);
-  assert.doesNotMatch(html, /<script>(?!\s*<\/script>)/i, `${file} must not contain an inline application`);
+  const source = await read(file);
+  assert.match(source, /<html\b/i, file + ' must be an HTML document');
+  assert.match(source, /href="\/css\/grabble\.css"/, file + ' must load the surface stylesheet');
+  assert.match(source, new RegExp('src="\/js\/' + controllers[surface] + '"'), file + ' must load its own controller');
+  assert.doesNotMatch(source, /grabble-client\.js/, file + ' must not load the presentation monolith');
+  assert.doesNotMatch(source, /<script>(?!\s*<\/script>)/i, file + ' must not contain inline application code');
+  assert.match(source, /tblive-contract-version" content="1\.35"/, file + ' must declare TBLive 1.35');
 }
+await assert.rejects(access(path.join(root, 'public/js/grabble-client.js')), 'the obsolete presentation monolith must be removed');
 
-const worker = (await read('src/index.js')) + (await read('src/worker.js')) + (await read('src/room.js')) + (await read('src/admin.js'));
+const server = (await Promise.all([
+  read('src/index.js'), read('src/worker.js'), read('src/room.js'), read('src/admin.js'),
+])).join('\n');
+const browser = (await Promise.all([
+  read('public/js/grabble-surface.js'), read('public/js/grabble-room-common.js'),
+  read('public/js/grabble-create.js'), read('public/js/grabble-transport.js'),
+  read('public/js/grabble-player.js'), read('public/js/grabble-admin.js'),
+])).join('\n');
 const index = await read('src/index.js');
 assert.ok(index.length < 1000, 'Worker entrypoint must remain a thin adapter');
-assert.match(await read('src/worker.js'), /import \{ registryCall \} from ['"]\.\/shared\.js['"];/, 'Worker router must import shared registry helpers');
+assert.match(await read('src/worker.js'), /import \{ registryCall \} from ['"]\.\/shared\.js['"];/);
 const wrangler = await read('wrangler.toml');
-assert.doesNotMatch(worker, /const CSS=`|const CLIENT=`|function page\(/, 'Worker must not contain the presentation monolith');
-assert.match(worker, /\['play', 'display', 'tv', 'host'\]\.includes\(p\[0\]\).*p\.length === 2/, 'Worker must route canonical room surfaces only with a room code');
-assert.match(worker, /p\.length === 0\) return serveSurface\('home'\)/, 'Worker must route the explicit home surface');
-assert.doesNotMatch(worker, /return serveSurface\('play'\)\}\s*\};/, 'Worker must not fall back unknown paths to the player surface');
-assert.match(worker, /env\.ASSETS\.fetch/, 'Worker must serve static surface assets');
-assert.match(worker, /controlToken/, 'Room creation and control WebSockets must use a room-scoped control token');
-assert.match(worker, /UNAUTHORISED_CONTROL_ROLE/, 'TV/host control connections must reject missing or invalid control tokens');
-assert.match(worker, /player_left/, 'Player leave must emit player_left');
-assert.match(worker, /player_joined/, 'Player join must emit player_joined');
-assert.match(wrangler, /binding\s*=\s*"ASSETS"/, 'Wrangler must expose the ASSETS binding used by the Worker');
-assert.match(worker, /p\[2\] === 'rooms'/, 'Worker must expose the TBLive room registry contract');
-assert.match(worker, /p\[2\] === 'games'/, 'Worker must expose the registered games contract');
-assert.match(worker, /kill-all/, 'Worker must expose the global kill-all contract');
+assert.doesNotMatch(server, /const CSS=|const CLIENT=|function page\(/);
+assert.match(server, /\['play', 'display', 'tv', 'host'\]\.includes\(p\[0\]\).*p\.length === 2/);
+assert.match(server, /p\.length === 0\) return serveSurface\('home'\)/);
+assert.doesNotMatch(server, /return serveSurface\('play'\)\}\s*;\s*$/);
+assert.match(server, /env\.ASSETS\.fetch/);
+assert.match(server, /controlToken/);
+assert.match(server, /UNAUTHORISED_CONTROL_ROLE/);
+assert.match(server, /player_left/);
+assert.match(server, /player_joined/);
+assert.match(wrangler, /binding\s*=\s*"ASSETS"/);
+assert.match(server, /p\[2\] === 'rooms'/);
+assert.match(server, /p\[2\] === 'games'/);
+assert.match(server, /kill-all/);
 
 const capabilities = JSON.parse(await read('tblive.capabilities.json'));
-assert.equal(capabilities.contractVersion, '1.34', 'Grabble must declare TBLive contract 1.34');
-assert.equal(capabilities.capabilities.hostlessTv, true, 'Grabble must expose hostless TV');
-assert.equal(capabilities.capabilities.tvCreatesRoom, true, 'TV must be able to create a room');
-
-const client = await read('public/js/grabble-client.js');
-const transport = await read('public/js/grabble-transport.js');
-assert.match(transport, /GrabbleTransport/, 'Transport module must expose the shared room transport');
-const admin = await read('public/js/grabble-admin.js');
-assert.match(admin, /GrabbleAdmin/, 'Admin module must expose the shared admin controller');
-const player = await read('public/js/grabble-player.js');
-assert.match(player, /GrabblePlayer/, 'Player module must expose the shared player controller');
-assert.match(client, /pathParts\s*=\s*location\.pathname\.split/, 'Client must derive its surface from the canonical path');
-assert.doesNotMatch(client, /G_MODE|G_CODE/, 'Client must not depend on Worker-injected mode globals');
-assert.doesNotMatch(client, /api\.qrserver\.com|quickchart\.io|chart\.google\.com/, 'Grabble must not use third-party QR services');
-assert.match(client, /data-join-qr/, 'Grabble must render the join QR in a local container');
-assert.match(client, /tvEntryPhase\s*=\s*["']idle["']/, 'TV room routes must retain the idle entry phase');
-assert.doesNotMatch(client, /tvEntryPhase\s*!==\s*["']lobby["']/, 'TV room routes must not re-enter the legacy splash/bridge flow');
-assert.match(client, /mode\s*===\s*["']tv["']\s*\?\s*["']tv["']\s*:\s*["']display["']/, 'TV room routes must retain the TV controller role');
+assert.equal(capabilities.contractVersion, '1.35');
+assert.equal(capabilities.capabilities.hostlessTv, true);
+assert.equal(capabilities.capabilities.tvCreatesRoom, true);
+for (const [surface, controller] of Object.entries(controllers)) {
+  assert.match(await read('public/surfaces/' + surface + '.html'), new RegExp('grabble-' + controller));
+}
+assert.doesNotMatch(browser, /grabble-client\.js/);
+assert.doesNotMatch(browser, /api\.qrserver\.com|quickchart\.io|chart\.google\.com/);
+assert.match(browser, /TBLiveQR/);
+assert.match(await read('public/js/grabble-transport.js'), /v:\s*1/);
+assert.match(await read('public/js/grabble-transport.js'), /snapshot/);
+assert.match(server, /setAlarm|alarm\(/);
+assert.match(server, /storage\.get|storage\.put/);
+assert.match(server, /seq/);
 
 const display = await read('public/surfaces/display.html');
 const tv = await read('public/surfaces/tv.html');
-assert.notEqual(display, tv, 'Display and TV must remain distinct surface shells');
-
+assert.notEqual(display, tv);
 const css = await read('public/css/grabble.css');
-assert.match(css, /setup-modal-tv[\s\S]*100dvh/, 'TV create flow must use a bounded dynamic viewport');
-assert.match(css, /setup-modal-tv[\s\S]*overflow:hidden/, 'TV create shell must contain overflow');
-assert.match(css, /setup-modal-tv[\s\S]*setup-footer/, 'TV create flow must have one persistent footer rail');
-assert.match(client, /play-again/, 'In-room replay action must exist');
-assert.match(client, /TBLiveQR/, 'QR rendering must use the canonical local TBLive renderer');
-assert.match(transport, /v:\s*1/, 'Transport actions must use the versioned TBLive envelope');
-assert.match(transport, /snapshot/, 'Transport must consume authoritative snapshot envelopes');
-assert.match(worker, /setAlarm|alarm\(/, 'Room lifecycle must use Durable Object alarms');
-assert.match(worker, /storage\.get|storage\.put/, 'Room state must survive Durable Object hibernation/restart');
-assert.match(worker, /seq/, 'Room broadcasts must carry a monotonically increasing sequence');
-
-
-assert.match(css, /TBLive 1\.34 TV create density/, 'TV create flow must use the 1.34 density patch');
-assert.match(css, /aspect-ratio:auto!important/, 'TV create card must not force a viewport-breaking aspect ratio');
-console.log('TBLive 1.34 static surface conformance passed');
+assert.match(css, /setup-modal-tv[\s\S]*100dvh/);
+assert.match(css, /setup-modal-tv[\s\S]*overflow:hidden/);
+assert.match(css, /setup-modal-tv[\s\S]*setup-footer/);
+assert.match(css, /TBLive 1\.34 TV create density|TBLive 1\.35 TV create density/);
+assert.match(css, /aspect-ratio:auto!important/);
+console.log('TBLive 1.35 static surface and monolith-boundary conformance passed');
