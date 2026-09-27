@@ -5,7 +5,8 @@
     connection = null,
     reconnectTimer = null,
     queuedAction = null,
-    lastSeq = 0;
+    lastSeq = 0,
+    lastSnapshotSeq = 0;
   const configure = (next) => {
     config = next || {};
   };
@@ -76,8 +77,10 @@
         if (role === "play" && hello.playerToken)
           localStorage.setItem("grabble-player-token:" + config.code, hello.playerToken);
       }
-      if (Number.isFinite(message.seq) && message.seq > lastSeq + 1 && lastSeq > 0)
+      const sequence = Number(message.seq);
+      if (Number.isFinite(sequence) && sequence > lastSeq + 1 && lastSeq > 0)
         send({ type: "sync" });
+      if (Number.isFinite(sequence) && sequence > lastSeq) lastSeq = sequence;
       if (message.type === "authenticated") config.onAuthenticated?.(message.payload || {});
       if (["ack", "error", "state_changed", "phase_changed", "player_joined", "player_left", "timer_started", "timer_updated", "score_updated", "finished", "room_closed"].includes(message.type))
         config.onEvent?.({ ...message, ...(message.payload || {}) });
@@ -86,8 +89,8 @@
         return;
       }
       if (message.type === "snapshot") {
-        if (Number.isFinite(message.seq) && message.seq <= lastSeq) return;
-        lastSeq = Number(message.seq || lastSeq);
+        if (Number.isFinite(sequence) && sequence <= lastSnapshotSeq) return;
+        if (Number.isFinite(sequence)) lastSnapshotSeq = sequence;
         config.onState?.({ ...message.payload, type: "state", v: message.v, seq: message.seq });
       }
     };
