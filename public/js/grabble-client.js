@@ -185,7 +185,7 @@
       '</div><div class="display-rules"><p class="eyebrow">HOW TO PLAY</p><div><b>01</b><span>Grab a letter from the pool.</span></div><div><b>02</b><span>Build the longest word before time runs out.</span></div><div><b>03</b><span>You can only grab the next letter on your word.</span></div><div><b>04</b><span>If you make a mistake or change your mind, release all your letters and start again.</span></div></div><div class="display-controls">' +
       (mode === "host" || mode === "tv"
         ? canStart
-          ? '<button id="start" class="race-start-cta">Start game</button>'
+          ? '<button id="start" class="race-start-cta" type="button" onclick="window.GrabbleTransport.send({type:\'start\'})">Start game</button>'
           : ""
         : "<button disabled>Waiting for the host</button>") +
       (mode === "host"
