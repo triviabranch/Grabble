@@ -78,6 +78,6 @@ assert.match(worker, /storage\.get|storage\.put/, 'Room state must survive Durab
 assert.match(worker, /seq/, 'Room broadcasts must carry a monotonically increasing sequence');
 
 
-assert.match(css, /TBLive 1\.33 TV create density/, 'TV create flow must use the 1.34 density patch');
+assert.match(css, /TBLive 1\.34 TV create density/, 'TV create flow must use the 1.34 density patch');
 assert.match(css, /aspect-ratio:auto!important/, 'TV create card must not force a viewport-breaking aspect ratio');
 console.log('TBLive 1.34 static surface conformance passed');
