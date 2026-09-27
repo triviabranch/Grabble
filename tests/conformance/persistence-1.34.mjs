@@ -8,7 +8,7 @@ const state = {
     async get() { return stored; },
     async put(key, value) { writes++; stored = value; },
     async deleteAlarm() {},
-    setAlarm() {},
+    setAlarm() { return Promise.resolve(); },
   },
 };
 const room = new GrabbleRoom(state, {});
