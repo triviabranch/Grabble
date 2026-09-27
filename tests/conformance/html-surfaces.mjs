@@ -33,7 +33,7 @@ const server = (await Promise.all([
 const browser = (await Promise.all([
   read('public/js/grabble-surface.js'), read('public/js/grabble-room-common.js'),
   read('public/js/grabble-create.js'), read('public/js/grabble-transport.js'),
-  read('public/js/grabble-player.js'), read('public/js/grabble-admin.js'),
+  read('public/js/grabble-player.js'), read('public/js/grabble-admin.js'), read('public/js/tblive-qr.js'),
 ])).join('\n');
 const index = await read('src/index.js');
 assert.ok(index.length < 1000, 'Worker entrypoint must remain a thin adapter');
