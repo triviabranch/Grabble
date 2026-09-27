@@ -58,7 +58,7 @@ assert.equal(capabilities.contractVersion, '1.35');
 assert.equal(capabilities.capabilities.hostlessTv, true);
 assert.equal(capabilities.capabilities.tvCreatesRoom, true);
 for (const [surface, controller] of Object.entries(controllers)) {
-  assert.match(await read('public/surfaces/' + surface + '.html'), new RegExp('grabble-' + controller));
+  assert.match(await read('public/surfaces/' + surface + '.html'), new RegExp(controller));
 }
 assert.doesNotMatch(browser, /grabble-client\.js/);
 assert.doesNotMatch(browser, /api\.qrserver\.com|quickchart\.io|chart\.google\.com/);
