@@ -9,6 +9,11 @@ async function makeRoom(env, mode, baseUrl) {
     body: JSON.stringify({ code, mode, controlToken, displayToken }),
   });
   if (!init.ok) throw new Error('ROOM_INIT_' + init.status);
+  await env.ADMIN.get(env.ADMIN.idFromName('global')).fetch('https://admin/register', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ code, gameId: 'grabble', gameName: 'Grabble', mode, phase: 'lobby', players: 0, createdAt: Date.now() }),
+  }).catch(() => null);
   await registryCall(env, '/register', { gameId: 'grabble', gameName: 'Grabble', roomId: code, roomCode: code, phase: 'lobby', mode, players: 0, createdAt: Date.now(), controlUrl: baseUrl + '/api/tblive/rooms/' + code + '/kill', capabilities: ['hostless-tv', 'room-kill', 'html-surfaces'] }).catch(() => null);
   return { code, controlToken, displayToken };
 }
