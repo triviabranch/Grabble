@@ -48,4 +48,7 @@ for (const file of Object.values(controllers)) {
 }
 assert.match(await read('public/js/grabble-play.js'), /GrabblePlayer\.configure/);
 assert.match(await read('public/js/grabble-play.js'), /GrabblePlayer\.bind/);
+const play = await read('public/js/grabble-play.js');
+assert.match(play, /phase === "countdown"/);
+assert.match(play, /setInterval\(paint, 100\)/);
 console.log('TBLive 1.35 protocol, release-gate and controller-boundary conformance passed');
