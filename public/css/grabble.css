@@ -82,7 +82,7 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
   align-items:stretch!important;
 }
 
-/* Final TBLive 1.33 Grabble TV create composition.
+/* Final TBLive 1.34 Grabble TV create composition.
    This deliberately supersedes the earlier exploratory TV rules above. */
 .shell-tv .tv-create-home{
   width:min(900px,calc(100vw - 12vw))!important;
@@ -553,7 +553,7 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
   .setup-modal-tv .setup-footer button{min-width:120px!important}
 }
 
-/* Retained bounded TV create layer; superseded by the 1.33 density layer below. */
+/* Retained bounded TV create layer; superseded by the 1.34 density layer below. */
 .setup-modal-tv{
   padding:40px!important;
   background:#25181acc!important;
@@ -932,7 +932,7 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
 }
 
 
-/* TBLive 1.33 TV create density: shared setup semantics, bounded TV adaptation. */
+/* TBLive 1.34 TV create density: shared setup semantics, bounded TV adaptation. */
 .setup-modal-tv{
   padding:20px 28px!important;
   place-items:center!important;
@@ -1054,7 +1054,7 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
   .setup-modal-tv .setup-footer{padding-top:12px!important}
 }
 
-/* The explainer is the single post-title bridge required by TBLive 1.33. */
+/* The explainer is the single post-title bridge required by TBLive 1.34. */
 .tv-explainer-modal .tv-explainer-card{
   width:min(720px,calc(100vw - 48px))!important;
   height:min(480px,calc(100dvh - 48px))!important;
@@ -1101,7 +1101,7 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
 }
 .setup-modal-tv .setup-page-actions{justify-content:flex-end!important}
 
-/* TBLive 1.33 TV browser-chrome safe area. 100dvh is the usable viewport
+/* TBLive 1.34 TV browser-chrome safe area. 100dvh is the usable viewport
    reported below visible Chromium chrome; env() is additive only on clients
    that expose an actual top inset. Every fixed TV layer inherits this shell. */
 :root{--tblive-tv-top-safe:env(safe-area-inset-top,0px)}
