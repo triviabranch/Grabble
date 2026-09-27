@@ -1107,3 +1107,21 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
 :root{--tblive-tv-top-safe:env(safe-area-inset-top,0px)}
 .shell-tv,.shell-display{height:calc(100dvh - var(--tblive-tv-top-safe));min-height:0;max-height:calc(100dvh - var(--tblive-tv-top-safe));padding-top:max(clamp(10px,3vw,42px),var(--tblive-tv-top-safe));}
 .shell-tv>.display-result-stage,.shell-display>.display-result-stage{height:calc(100dvh - var(--tblive-tv-top-safe))!important;max-height:calc(100dvh - var(--tblive-tv-top-safe))!important;padding-top:max(clamp(18px,4vw,64px),var(--tblive-tv-top-safe))!important;}
+
+/* TBLive 1.35 player-only gameplay and results */
+.shell-play .player-word-tile{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:12px;background:var(--bone);color:var(--ink);font-size:1.05rem;font-weight:1000;box-shadow:0 4px 0 var(--deep)}
+.shell-play .word-empty{display:block;width:100%;text-align:center;color:var(--peach);font-size:.85rem;font-weight:800;padding:10px}
+.shell-play .player-result-stage{width:100%;max-width:680px;max-height:calc(100dvh - 150px);overflow:auto;padding:8px 0 18px;display:flex;flex-direction:column;gap:12px}
+.shell-play .player-result-heading{text-align:center;padding:0 8px}
+.shell-play .player-result-heading h1{margin:.15em 0;font-size:clamp(1.8rem,8vw,3rem);line-height:.95}
+.shell-play .player-result-cards{display:grid;gap:8px}
+.shell-play .player-result-card{min-width:0;padding:12px 13px;border:2px solid rgba(255,241,220,.22);border-radius:18px;background:rgba(72,42,53,.78);box-shadow:0 5px 0 rgba(111,45,43,.65)}
+.shell-play .player-result-card:first-child{border-color:var(--hot);background:rgba(111,45,43,.9)}
+.shell-play .player-result-card-head{display:flex;justify-content:space-between;align-items:center;gap:8px;min-width:0}
+.shell-play .player-result-card-head strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.shell-play .player-result-card-head span{flex:0 0 auto;color:var(--hot);font-weight:1000}
+.shell-play .player-result-word{display:flex;flex-wrap:wrap;gap:5px;margin:9px 0 4px}
+.shell-play .player-result-card>small{color:var(--peach);font-weight:800}
+.shell-play .player-result-actions{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;padding-bottom:4px}
+.shell-play .player-result-actions button{min-width:145px}
+@media(max-width:520px){.shell-play .player-result-stage{max-height:calc(100dvh - 142px);gap:9px}.shell-play .player-result-card{padding:10px 11px}.shell-play .player-result-card-head{font-size:.9rem}.shell-play .player-result-word{gap:4px}.shell-play .player-word-tile{flex-basis:36px;width:36px;height:36px;font-size:.95rem}.shell-play .player-result-actions button{min-width:128px;padding:.7rem .85rem}}
