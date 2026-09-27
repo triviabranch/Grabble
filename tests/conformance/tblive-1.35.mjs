@@ -32,6 +32,7 @@ assert.match(admin, /u\.pathname === ['"]\/register['"]/);
 assert.match(room, /\/unregister\//);
 assert.doesNotMatch(transport, /setInterval\([^)]*fetch|setInterval\([^)]*api/);
 assert.match(workflow, /browser-flow/);
+assert.match(worker, /admin\/register/, 'created rooms must be visible to the local admin namespace');
 
 const controllers = {
   home: 'public/js/grabble-home.js',
