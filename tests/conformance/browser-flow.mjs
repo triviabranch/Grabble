@@ -5,6 +5,14 @@ const base = process.env.BASE_URL || 'http://127.0.0.1:8787';
 const browser = await chromium.launch({ headless: true });
 const tvContext = await browser.newContext({ viewport: { width: 1280, height: 720 } });
 const tv = await tvContext.newPage();
+  tv.on('websocket', ws => {
+    ws.on('framesent', frame => {
+      try { const message = JSON.parse(frame); console.log('TV SENT', message.type, message.payload?.type || ''); } catch {}
+    });
+    ws.on('framereceived', frame => {
+      try { const message = JSON.parse(frame); console.log('TV RECEIVED', message.type, message.payload?.phase || message.phase || ''); } catch {}
+    });
+  });
 try {
   await tv.goto(base + '/tv', { waitUntil: 'networkidle' });
   await tv.getByRole('button', { name: 'Continue' }).click();
