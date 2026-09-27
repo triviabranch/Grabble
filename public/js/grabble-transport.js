@@ -78,7 +78,7 @@
           localStorage.setItem("grabble-player-token:" + config.code, hello.playerToken);
       }
       const sequence = Number(message.seq);
-      if (Number.isFinite(sequence) && sequence > lastSeq + 1 && lastSeq > 0)
+      if (Number.isFinite(message.seq) && message.seq > lastSeq + 1 && lastSeq > 0)
         send({ type: "sync" });
       if (Number.isFinite(sequence) && sequence > lastSeq) lastSeq = sequence;
       if (message.type === "authenticated") config.onAuthenticated?.(message.payload || {});
