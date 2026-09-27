@@ -17,10 +17,13 @@ Each canonical browser surface has its own static HTML shell, including the expl
 - `public/surfaces/host.html`
 - `public/surfaces/admin.html`
 
-The shells load the shared static client and stylesheet:
+The shells load the shared surface primitives and stylesheet. Each shell then loads its own controller:
 
-- `public/js/grabble-client.js`
+- `public/js/grabble-surface.js`
+- `public/js/grabble-room-common.js`
 - `public/css/grabble.css`
+
+The presentation monolith `public/js/grabble-client.js` has been removed under TBLive 1.35.
 
 The Worker maps the clean TBLive routes to these shells. The public routes remain canonical and must not expose `.html` URLs or route fallbacks.
 
