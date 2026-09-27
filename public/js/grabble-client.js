@@ -671,9 +671,11 @@
           (state.players.length === 1 || state.ownerId === me));
     if (mode === "play" && state.phase === "lobby") {
       shell(playerLobby());
-      document
-        .getElementById("start")
-        ?.addEventListener("click", () => send({ type: "start" }));
+      document.getElementById("start")?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        window.GrabbleTransport.send({ type: "start" });
+      });
       return;
     }
     if (
@@ -682,9 +684,11 @@
     ) {
       shell(lobby());
       paintJoinQr();
-      document
-        .getElementById("start")
-        ?.addEventListener("click", () => send({ type: "start" }));
+      document.getElementById("start")?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        window.GrabbleTransport.send({ type: "start" });
+      });
       const display = document.getElementById("open-display");
       if (display)
         display.onclick = () =>
