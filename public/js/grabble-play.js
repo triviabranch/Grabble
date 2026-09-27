@@ -5,6 +5,20 @@
     getState: () => s.getState(),
     send: (message) => window.GrabbleTransport.send(message),
   });
+  let timer = null;
+  const updateTimer = (state) => {
+    clearInterval(timer);
+    timer = null;
+    if (!["countdown", "running"].includes(state.phase)) return;
+    const paint = () => {
+      const node = document.querySelector(".play-timer");
+      if (!node) return;
+      const seconds = Math.max(0, Math.ceil(((state.endAt || Date.now()) - Date.now()) / 1000));
+      node.textContent = seconds + "s";
+    };
+    paint();
+    timer = setInterval(paint, 100);
+  };
   const entry = (after) => {
     const modal = document.createElement("div");
     modal.className = "entry rules show";
@@ -51,11 +65,14 @@
   const render = (state) => {
     const me = s.getMe();
     if (state.phase === "lobby") {
+      clearInterval(timer);
+      timer = null;
       s.shell(lobby(state, me));
       document.getElementById("start")?.addEventListener("click", () => window.GrabbleTransport.send({type:"start"}), {once:true});
       return;
     }
     s.shell(game(state, me));
+    updateTimer(state);
     if (state.phase === "results" || state.phase === "final") {
       document.getElementById("next-round")?.addEventListener("click", () => window.GrabbleTransport.send({type:"next"}), {once:true});
       document.getElementById("play-again")?.addEventListener("click", () => window.GrabbleTransport.send({type:"restart"}), {once:true});
