@@ -42,7 +42,7 @@ assert.match(worker, /p\[2\] === 'games'/, 'Worker must expose the registered ga
 assert.match(worker, /kill-all/, 'Worker must expose the global kill-all contract');
 
 const capabilities = JSON.parse(await read('tblive.capabilities.json'));
-assert.equal(capabilities.contractVersion, '1.33', 'Grabble must declare TBLive contract 1.33');
+assert.equal(capabilities.contractVersion, '1.34', 'Grabble must declare TBLive contract 1.34');
 assert.equal(capabilities.capabilities.hostlessTv, true, 'Grabble must expose hostless TV');
 assert.equal(capabilities.capabilities.tvCreatesRoom, true, 'TV must be able to create a room');
 
@@ -78,6 +78,6 @@ assert.match(worker, /storage\.get|storage\.put/, 'Room state must survive Durab
 assert.match(worker, /seq/, 'Room broadcasts must carry a monotonically increasing sequence');
 
 
-assert.match(css, /TBLive 1\.33 TV create density/, 'TV create flow must use the 1.33 density patch');
+assert.match(css, /TBLive 1\.33 TV create density/, 'TV create flow must use the 1.34 density patch');
 assert.match(css, /aspect-ratio:auto!important/, 'TV create card must not force a viewport-breaking aspect ratio');
-console.log('TBLive 1.33 static surface conformance passed');
+console.log('TBLive 1.34 static surface conformance passed');
