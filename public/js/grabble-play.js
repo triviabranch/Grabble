@@ -13,7 +13,20 @@
     modal.querySelector("#go").onclick = () => { modal.remove(); after?.(); };
   };
   const lobby = (state, me) => '<section class="mobile-lobby panel"><div class="mobile-lobby-head"><p class="eyebrow">' + (state.totalRounds > 1 ? "ROUND " + state.round + " OF " + state.totalRounds : "SINGLE ROUND") + '</p><h1>Join Game</h1><p class="mobile-room-code">Room <strong>' + s.esc(s.code) + '</strong></p><p class="mobile-player-count">' + state.players.length + " player" + (state.players.length === 1 ? "" : "s") + ' joined</p></div><div class="mobile-lobby-players">' + (state.players.length ? state.players.map(p => '<div class="mobile-player"><span class="mobile-player-dot"></span><strong>' + s.esc(p.name) + "</strong>" + (p.id === me ? "<small>YOU</small>" : "") + "</div>").join("") : '<p class="status">Waiting for players</p>') + '</div>' + window.GrabbleRoomCommon.rules().replace("display-rules","mobile-lobby-rules") + '<div class="mobile-lobby-action">' + ((state.ownerId === me || state.players.length === 1) ? '<button id="start" class="race-start-cta">Start game</button>' : "<button disabled>Waiting for the creator</button>") + "</div></section>";
-  const game = (state, me) => '<section class="center player-game"><div class="controls"><div class="play-round"><div class="timer play-timer">' + (state.phase === "running" ? Math.max(0, Math.ceil((state.endAt - Date.now()) / 1000)) + "s" : "READY") + '</div><small>Round ' + state.round + " of " + state.totalRounds + '</small></div></div>' + (state.phase === "results" || state.phase === "final" ? window.GrabbleRoomCommon.results(state,me) : '<section class="pool">' + (state.pool || []).map((t,i) => '<div class="token ' + (t.letter === "*" ? "wild" : "") + '" data-id="' + s.esc(t.id) + '">' + (state.phase === "running" ? (t.letter === "*" ? "★" : s.esc(t.letter)) : "") + "</div>").join("") + '</section><div class="panel player-word-panel"><div class="word-card-head"><h2>Your word</h2><button class="release-x" id="release" aria-label="Reset word">Reset</button></div><div class="wordline" id="wordline"></div></div>') + "</section>";
+  const game = (state, me) => {
+    const tokens = state.pool || [];
+    const columns = Math.min(6, Math.max(3, Math.ceil(Math.sqrt(tokens.length || 1))));
+    const rows = Math.max(1, Math.ceil(tokens.length / columns));
+    const poolTokens = tokens.map((t, i) => {
+      const column = i % columns;
+      const row = Math.floor(i / columns);
+      const left = columns === 1 ? 50 : 12 + (column / (columns - 1)) * 76;
+      const top = rows === 1 ? 50 : 16 + (row / (rows - 1)) * 68;
+      const speed = (1.8 + (i % 5) * 0.22).toFixed(2);
+      return '<div class="token ' + (t.letter === "*" ? "wild" : "") + '" data-id="' + s.esc(t.id) + '" style="left:' + left.toFixed(1) + '%;top:' + top.toFixed(1) + '%;--speed:' + speed + 's">' + (state.phase === "running" ? (t.letter === "*" ? "★" : s.esc(t.letter)) : "") + "</div>";
+    }).join("");
+    return '<section class="center player-game"><div class="controls"><div class="play-round"><div class="timer play-timer">' + (state.phase === "running" ? Math.max(0, Math.ceil((state.endAt - Date.now()) / 1000)) + "s" : "READY") + '</div><small>Round ' + state.round + " of " + state.totalRounds + '</small></div></div>' + (state.phase === "results" || state.phase === "final" ? window.GrabbleRoomCommon.results(state,me) : '<section class="pool">' + poolTokens + '</section><div class="panel player-word-panel"><div class="word-card-head"><h2>Your word</h2><button class="release-x" id="release" aria-label="Reset word">Reset</button></div><div class="wordline" id="wordline"></div></div>') + "</section>";
+  };
   const join = () => {
     s.shell('<section class="center join-room-card panel"><div class="join-room-head"><p class="eyebrow">JOIN THIS GAME</p><h1>Join this room</h1><p>Enter your name to play.</p><span class="room-code-mini">' + s.esc(s.code) + '</span></div><div class="join-field"><input id="name" maxlength="18" placeholder="YOUR NAME"><button id="join">Join game</button></div></section>');
     document.getElementById("join").onclick = () => {
