@@ -122,8 +122,11 @@
     api.shell(
       '<section class="center home-hero"><div class="home-panel panel"><p class="home-kicker">BUILD YOUR WORD</p><h1>Build the longest word before time runs out.</h1><p class="home-copy">Grab letters from the pool, make your move and beat the room.</p><div class="home-actions"><button id="open-setup">Create a game</button><button class="secondary" id="open-join">Join a room</button></div></div></section>',
     );
+    // A game homepage creates a hosted room. `/play/[CODE]` is join-only;
+    // the creator must retain the host/controller session and may then join
+    // their own room as a player from that device.
     document.getElementById("open-setup").onclick = () =>
-      openCreateFlow("play");
+      location.href = "/host";
     document.getElementById("open-join").onclick = () => {
       const joinModal = document.createElement("div");
       joinModal.className = "setup-modal";
