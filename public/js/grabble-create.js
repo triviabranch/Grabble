@@ -6,7 +6,7 @@
   function openCreateFlow(surface) {
     const modal = document.createElement("div");
     modal.className = "setup-modal setup-modal-" + surface;
-    const needsName = surface === "play";
+    const needsName = surface === "play" || surface === "host";
     const singlePage = surface === "tv" || surface === "host";
     const backTarget = surface === "tv" ? "TriviaBranch TV" : "Grabble";
     modal.innerHTML =
@@ -66,7 +66,8 @@
       const name = needsName
         ? modal.querySelector("#name").value.trim() || "Player"
         : "";
-      if (needsName) localStorage.setItem("grabble-pending-name", name);
+      if (surface === "play") localStorage.setItem("grabble-pending-name", name);
+      if (surface === "host") localStorage.setItem("grabble-host-name", name || "Host");
       const btn = modal.querySelector("#setup-next");
       btn.disabled = true;
       btn.textContent = "Creating…";
@@ -78,7 +79,7 @@
           localStorage.setItem("grabble-host-token", x.controlToken);
         if (x.displayToken)
           localStorage.setItem("grabble-display-token:" + x.code, x.displayToken);
-        if (needsName)
+        if (surface === "play")
           localStorage.setItem(
             "grabble-pending-join",
             JSON.stringify({ code: x.code, name }),
