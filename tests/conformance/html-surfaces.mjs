@@ -61,8 +61,8 @@ assert.equal(capabilities.routes.mobile, '/play/[CODE]');
 assert.equal(capabilities.routes.tv, '/tv/[CODE]');
 assert.equal(capabilities.routes.display, '/display/[CODE]');
 const createFlow = await read('public/js/grabble-create.js');
-assert.match(createFlow, /location\.href = "/host"/);
-assert.match(createFlow, /location\.href = "/play\/" \+ c/);
+assert.ok(createFlow.includes('location.href = "/host"'));
+assert.ok(createFlow.includes('location.href = "/play/" + c'));
 assert.match(createFlow, /surface === "tv"/);
 assert.match(createFlow, /surface === "host"/);
 for (const [surface, controller] of Object.entries(controllers)) {
