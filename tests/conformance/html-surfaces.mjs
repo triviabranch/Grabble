@@ -23,7 +23,7 @@ for (const surface of surfaces) {
   assert.match(source, new RegExp('src="\/js\/' + controllers[surface] + '"'), file + ' must load its own controller');
   assert.doesNotMatch(source, /grabble-client\.js/, file + ' must not load the presentation monolith');
   assert.doesNotMatch(source, /<script>(?!\s*<\/script>)/i, file + ' must not contain inline application code');
-  assert.match(source, /tblive-contract-version" content="1\.35"/, file + ' must declare TBLive 1.35');
+  assert.match(source, /tblive-contract-version" content="1\.37"/, file + ' must declare TBLive 1.37');
 }
 await assert.rejects(access(path.join(root, 'public/js/grabble-client.js')), 'the obsolete presentation monolith must be removed');
 
@@ -57,6 +57,14 @@ const capabilities = JSON.parse(await read('tblive.capabilities.json'));
 assert.equal(capabilities.contractVersion, '1.35');
 assert.equal(capabilities.capabilities.hostlessTv, true);
 assert.equal(capabilities.capabilities.tvCreatesRoom, true);
+assert.equal(capabilities.routes.mobile, '/play/[CODE]');
+assert.equal(capabilities.routes.tv, '/tv/[CODE]');
+assert.equal(capabilities.routes.display, '/display/[CODE]');
+const createFlow = await read('public/js/grabble-create.js');
+assert.match(createFlow, /location\.href = "/host"/);
+assert.match(createFlow, /location\.href = "/play\/" \+ c/);
+assert.match(createFlow, /surface === "tv"/);
+assert.match(createFlow, /surface === "host"/);
 for (const [surface, controller] of Object.entries(controllers)) {
   assert.match(await read('public/surfaces/' + surface + '.html'), new RegExp(controller));
 }
@@ -76,6 +84,6 @@ const css = await read('public/css/grabble.css');
 assert.match(css, /setup-modal-tv[\s\S]*100dvh/);
 assert.match(css, /setup-modal-tv[\s\S]*overflow:hidden/);
 assert.match(css, /setup-modal-tv[\s\S]*setup-footer/);
-assert.match(css, /TBLive 1\.34 TV create density|TBLive 1\.35 TV create density/);
+assert.match(css, /TBLive 1\.34 TV create density|TBLive 1\.37 TV create density/);
 assert.match(css, /aspect-ratio:auto!important/);
-console.log('TBLive 1.35 static surface and monolith-boundary conformance passed');
+console.log('TBLive 1.37 static surface and monolith-boundary conformance passed');
