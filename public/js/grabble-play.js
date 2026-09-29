@@ -88,7 +88,8 @@
     if (pending && pending.code === s.code && pending.name) {
       localStorage.removeItem("grabble-pending-join");
       s.shell('<section class="center hero panel"><h1>Joining the room</h1><p class="status">Room <b>' + s.esc(s.code) + "</b></p></section>");
-      entry(() => s.connect("play", pending.name, (next) => render(next)));
+      const joinHost = () => s.connect("play", pending.name, (next) => render(next));
+      pending.skipHowToPlay ? joinHost() : entry(joinHost);
     } else join();
   };
   boot();
