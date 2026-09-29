@@ -57,6 +57,9 @@ export default { async fetch(request, env) {
   if (p.length === 0) return serveSurface('home');
   if (p[0] === 'admin' && p.length === 1) return serveSurface('admin');
   if (p[0] === 'tv' && p.length === 1) return serveSurface('tv');
+  // Entry surfaces are valid without a room code: they open their setup/join flow.
+  // Room surfaces remain canonical at /play/[CODE], /host/[CODE], /display/[CODE], /tv/[CODE].
+  if (['play', 'host'].includes(p[0]) && p.length === 1) return serveSurface(p[0]);
   if (['play', 'display', 'tv', 'host'].includes(p[0]) && p.length === 2) return serveSurface(p[0]);
   return new Response('Not found', { status: 404, headers: { 'content-type': 'text/plain;charset=UTF-8' } });
 } };
