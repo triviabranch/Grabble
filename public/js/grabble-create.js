@@ -8,9 +8,9 @@
     modal.className = "setup-modal setup-modal-" + surface;
     const needsName = surface === "play";
     const singlePage = surface === "tv" || surface === "host";
+    const backTarget = surface === "tv" ? "TriviaBranch TV" : "Grabble";
     modal.innerHTML =
-      '<div class="setup-backdrop"></div><section class="setup-card" role="dialog" aria-modal="true" aria-labelledby="setup-title"><div class="setup-head setup-head-tv"><button class="setup-tv-back" id="setup-tv-back" type="button" aria-label="Back to " + (surface === "tv" ? "TriviaBranch TV" : "Grabble") + "><span aria-hidden="true">←</span> " + (surface === "tv" ? "TriviaBranch TV" : "Grabble") + "</button>' +
-      api.logo() +
+      '<div class="setup-backdrop"></div><section class="setup-card" role="dialog" aria-modal="true" aria-labelledby="setup-title"><div class="setup-head setup-head-tv"><button class="setup-tv-back" id="setup-tv-back" type="button" aria-label="Back to ' + backTarget + '"><span aria-hidden="true">←</span> ' + backTarget + '</button>' +
       '<p class="setup-step-label" id="setup-step-label">SETUP · 1 OF ' +
       (singlePage ? "1" : "2") +
       '</p><div class="setup-progress" aria-label="Setup progress"><i class="active"></i>' +
