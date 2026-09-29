@@ -118,12 +118,25 @@
     api.shell('<section class="center tv-create-home" aria-label="Grabble TV setup"></section>');
     tvExplainer();
   }
+  function homeHowTo() {
+    const modal = document.createElement("div");
+    modal.className = "setup-modal home-howto-modal";
+    modal.innerHTML =
+      '<div class="setup-backdrop"></div><section class="setup-card home-howto-card" role="dialog" aria-modal="true" aria-labelledby="home-howto-title"><div class="setup-head">' +
+      api.logo() +
+      '</div><div class="setup-page active"><p class="eyebrow">HOW TO PLAY</p><h2 id="home-howto-title">Build the longest word</h2><div class="rules-list"><p><b>1</b> Grab the next letter from the pool.</p><p><b>2</b> Build one word before time runs out.</p><p><b>3</b> You can only add the next letter.</p><p><b>4</b> Release all your letters if you change your mind.</p></div></div><div class="setup-footer"><span></span><button class="next" id="home-howto-close">Got it</button></div></section>';
+    document.body.append(modal);
+    const close = () => modal.remove();
+    modal.querySelector("#home-howto-close").onclick = close;
+    modal.querySelector(".setup-backdrop").onclick = close;
+  }
   function home() {
     api.shell(
-      '<section class="center home-hero"><div class="home-panel panel"><p class="home-kicker">BUILD YOUR WORD</p><h1>Build the longest word before time runs out.</h1><p class="home-copy">Grab letters from the pool, make your move and beat the room.</p><div class="home-actions"><button id="open-setup">Create a game</button><button class="secondary" id="open-join">Join a room</button></div></div></section>',
+      '<section class="center home-hero"><div class="home-panel panel"><p class="home-kicker">A LIVE WORD GAME</p><div class="home-tiles" aria-hidden="true"><span>G</span><span>R</span><span>A</span><span>B</span><span>B</span><span class="fly">L</span><span class="accent">E</span></div><h1>Build the longest word before time runs out.</h1><p class="home-copy">Play together on phones, with the room on screen.</p><div class="home-actions"><button id="open-setup">Play Now</button><button class="secondary" id="open-join">Join a room</button></div><button class="home-howto-link" id="open-howto">How to play</button></div></section>',
     );
     document.getElementById("open-setup").onclick = () =>
       (location.href = "/host");
+    document.getElementById("open-howto").onclick = homeHowTo;
     document.getElementById("open-join").onclick = () => {
       const joinModal = document.createElement("div");
       joinModal.className = "setup-modal";
