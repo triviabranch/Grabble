@@ -54,7 +54,7 @@ assert.match(server, /p\[2\] === 'games'/);
 assert.match(server, /kill-all/);
 
 const capabilities = JSON.parse(await read('tblive.capabilities.json'));
-assert.equal(capabilities.contractVersion, '1.35');
+assert.equal(capabilities.contractVersion, '1.37');
 assert.equal(capabilities.capabilities.hostlessTv, true);
 assert.equal(capabilities.capabilities.tvCreatesRoom, true);
 assert.equal(capabilities.routes.mobile, '/play/[CODE]');
@@ -84,6 +84,6 @@ const css = await read('public/css/grabble.css');
 assert.match(css, /setup-modal-tv[\s\S]*100dvh/);
 assert.match(css, /setup-modal-tv[\s\S]*overflow:hidden/);
 assert.match(css, /setup-modal-tv[\s\S]*setup-footer/);
-assert.match(css, /TBLive 1\.34 TV create density|TBLive 1\.37 TV create density/);
+assert.match(css, /TBLive 1\.37 TV create density/);
 assert.match(css, /aspect-ratio:auto!important/);
 console.log('TBLive 1.37 static surface and monolith-boundary conformance passed');
