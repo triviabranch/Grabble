@@ -6,7 +6,7 @@
   function openCreateFlow(surface) {
     const modal = document.createElement("div");
     modal.className = "setup-modal setup-modal-" + surface;
-    const needsName = surface === "play" || surface === "host";
+    const needsName = surface === "play";
     const singlePage = surface === "tv" || surface === "host";
     const backTarget = surface === "tv" ? "TriviaBranch TV" : "Grabble";
     modal.innerHTML =
@@ -67,7 +67,6 @@
         ? modal.querySelector("#name").value.trim() || "Player"
         : "";
       if (surface === "play") localStorage.setItem("grabble-pending-name", name);
-      if (surface === "host") localStorage.setItem("grabble-host-name", name || "Host");
       const btn = modal.querySelector("#setup-next");
       btn.disabled = true;
       btn.textContent = "Creating…";
