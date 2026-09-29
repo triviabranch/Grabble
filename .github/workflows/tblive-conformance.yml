@@ -19,8 +19,8 @@ jobs:
         with:
           node-version: 20
       - run: node tests/conformance/html-surfaces.mjs
-      - run: node tests/conformance/tblive-1.35.mjs
-      - run: node tests/conformance/persistence-1.35.mjs
+      - run: node tests/conformance/tblive-1.37.mjs
+      - run: node tests/conformance/persistence-1.37.mjs
 
   browser-flow:
     needs: static-surfaces
