@@ -1184,3 +1184,27 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
 .shell-play:has(.grabble-home)>.brand{display:none!important}
 .grabble-home .home-nav-logo img{width:min(270px,52vw);max-height:70px}
 @media(max-width:520px){.grabble-home .home-nav-logo img{width:min(220px,58vw);max-height:56px}}
+
+
+/* Mobile homepage containment: every marketing block stays inside the viewport. */
+.grabble-home,.grabble-home *,.grabble-home *::before,.grabble-home *::after{box-sizing:border-box}
+.grabble-home{width:100%;max-width:100%;overflow-x:hidden}
+.grabble-home main,.grabble-home .home-hero,.grabble-home .home-hero-copy,.grabble-home .home-preview,.grabble-home .home-howto{min-width:0}
+.grabble-home .home-hero h1,.grabble-home .home-preview h2,.grabble-home .home-howto h2{overflow-wrap:anywhere;word-break:normal}
+.grabble-home .home-actions{min-width:0;max-width:100%}
+.grabble-home .home-actions a,.grabble-home .home-actions button{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:520px){
+  .grabble-home{padding-left:16px;padding-right:16px}
+  .grabble-home .home-nav{min-width:0}
+  .grabble-home .home-nav-logo{min-width:0;max-width:64%}
+  .grabble-home .home-nav-logo img{max-width:100%;height:auto}
+  .grabble-home .home-hero{width:100%;padding-left:0;padding-right:0}
+  .grabble-home .home-hero h1{font-size:clamp(2.35rem,12.5vw,4rem);line-height:.94;letter-spacing:-.065em}
+  .grabble-home .home-copy{font-size:1rem;line-height:1.35}
+  .grabble-home .home-actions{width:100%;gap:10px}
+  .grabble-home .home-actions a,.grabble-home .home-actions button{width:100%;flex:0 1 auto}
+  .grabble-home .home-preview{width:100%;max-width:100%;overflow:hidden}
+  .grabble-home .home-preview h2{font-size:clamp(1.8rem,8.5vw,2.7rem)}
+  .grabble-home .home-preview-tiles{max-width:100%;overflow:hidden}
+  .grabble-home .home-preview-tiles span{flex:0 1 25%;min-width:0}
+}
