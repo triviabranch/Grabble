@@ -118,26 +118,54 @@
     api.shell('<section class="center tv-create-home" aria-label="Grabble TV setup"></section>');
     tvExplainer();
   }
-  function homeHowTo() {
-    const modal = document.createElement("div");
-    modal.className = "setup-modal home-howto-modal";
-    modal.innerHTML =
-      '<div class="setup-backdrop"></div><section class="setup-card home-howto-card" role="dialog" aria-modal="true" aria-labelledby="home-howto-title"><div class="setup-head">' +
-      api.logo() +
-      '</div><div class="setup-page active"><p class="eyebrow">HOW TO PLAY</p><h2 id="home-howto-title">Build the longest word</h2><div class="rules-list"><p><b>1</b> Grab the next letter from the pool.</p><p><b>2</b> Build one word before time runs out.</p><p><b>3</b> You can only add the next letter.</p><p><b>4</b> Release all your letters if you change your mind.</p></div></div><div class="setup-footer"><span></span><button class="next" id="home-howto-close">Got it</button></div></section>';
-    document.body.append(modal);
-    const close = () => modal.remove();
-    modal.querySelector("#home-howto-close").onclick = close;
-    modal.querySelector(".setup-backdrop").onclick = close;
-  }
   function home() {
     api.shell(
-      '<section class="center home-hero"><div class="home-panel panel"><p class="home-kicker">A LIVE WORD GAME</p><div class="home-tiles" aria-hidden="true"><span>G</span><span>R</span><span>A</span><span>B</span><span>B</span><span class="fly">L</span><span class="accent">E</span></div><h1>Build the longest word before time runs out.</h1><p class="home-copy">Play together on phones, with the room on screen.</p><div class="home-actions"><button id="open-setup">Play Now</button><button class="secondary" id="open-join">Join a room</button></div><button class="home-howto-link" id="open-howto">How to play</button></div></section>',
+      `<section class="grabble-home" aria-label="Grabble homepage">
+        <header class="home-nav">
+          <a class="home-nav-logo" href="/" aria-label="Grabble home">${api.logo()}</a>
+          <nav aria-label="Main navigation">
+            <a href="#how-to-play">How to play</a>
+            <button class="home-nav-join" data-open-join type="button">Join a room</button>
+          </nav>
+        </header>
+        <main>
+          <section class="home-hero">
+            <div class="home-hero-copy">
+              <p class="home-kicker">GRAB IT. BUILD IT. PLAY IT.</p>
+              <h1>Build the longest word before time runs out.</h1>
+              <p class="home-copy">Grab letters from the pool, make your move and beat the room. Play together on phones with the game on screen.</p>
+              <div class="home-actions">
+                <a class="home-primary" href="/host">Play Now <span aria-hidden="true">→</span></a>
+                <button class="secondary" data-open-join type="button">Join a room <span aria-hidden="true">↗</span></button>
+              </div>
+              <p class="home-note">No app. No downloads. Just a room code and a race for the longest word.</p>
+            </div>
+            <div class="home-preview" aria-label="Grabble game preview">
+              <p class="home-preview-kicker">CHOOSE YOUR GAME</p>
+              <p class="home-preview-label">BUILD → BEAT THE CLOCK</p>
+              <h2>One round or a five-round showdown.</h2>
+              <div class="home-preview-tiles" aria-hidden="true">
+                <span>1</span><span class="selected">5</span>
+              </div>
+              <p class="home-preview-footer">THE LETTERS TAKE IT FROM HERE</p>
+            </div>
+          </section>
+          <section class="home-howto" id="how-to-play" aria-labelledby="how-to-play-title">
+            <p class="home-kicker">HOW TO PLAY</p>
+            <h2 id="how-to-play-title">Four steps. One very long word.</h2>
+            <p class="home-section-copy">One shared screen, everyone’s phone, and a finish nobody can predict.</p>
+            <ol class="home-steps">
+              <li><span>01</span><div><h3>Join</h3><p>Scan the room QR code or enter the four-character code.</p></div></li>
+              <li><span>02</span><div><h3>Grab</h3><p>Take the next letter from the pool.</p></div></li>
+              <li><span>03</span><div><h3>Build</h3><p>Add letters in order to make your longest word.</p></div></li>
+              <li><span>04</span><div><h3>Beat the clock</h3><p>Score your word when time runs out.</p></div></li>
+            </ol>
+          </section>
+          <footer class="home-footer">MADE FOR GAME NIGHTS · WORKS ON THE BIG SCREEN · PLAYS ON PHONES</footer>
+        </main>
+      </section>`,
     );
-    document.getElementById("open-setup").onclick = () =>
-      (location.href = "/host");
-    document.getElementById("open-howto").onclick = homeHowTo;
-    document.getElementById("open-join").onclick = () => {
+    const openJoin = () => {
       const joinModal = document.createElement("div");
       joinModal.className = "setup-modal";
       joinModal.innerHTML =
@@ -155,6 +183,9 @@
       };
       joinModal.querySelector("#room").focus();
     };
+    document.querySelectorAll("[data-open-join]").forEach((button) => {
+      button.addEventListener("click", openJoin);
+    });
   }
   function hostHome() {
     openCreateFlow("host");
