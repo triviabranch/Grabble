@@ -125,7 +125,6 @@
           <a class="home-nav-logo" href="/" aria-label="Grabble home">${api.logo()}</a>
           <nav aria-label="Main navigation">
             <a href="#how-to-play">How to play</a>
-            <button class="home-nav-join" data-open-join type="button">Join a room</button>
           </nav>
         </header>
         <main>
@@ -141,13 +140,13 @@
               <p class="home-note">No app. No downloads. Just a room code and a race for the longest word.</p>
             </div>
             <div class="home-preview" aria-label="Grabble game preview">
-              <p class="home-preview-kicker">CHOOSE YOUR GAME</p>
-              <p class="home-preview-label">BUILD → BEAT THE CLOCK</p>
-              <h2>One round or a five-round showdown.</h2>
+              <p class="home-preview-kicker">THE GRABBLE RULE</p>
+              <p class="home-preview-label">NEXT LETTER ONLY</p>
+              <h2>Grab the next letter. Build your word. Beat the clock.</h2>
               <div class="home-preview-tiles" aria-hidden="true">
-                <span>1</span><span class="selected">5</span>
+                <span>G</span><span>R</span><span class="selected">A</span><span>_</span>
               </div>
-              <p class="home-preview-footer">THE LETTERS TAKE IT FROM HERE</p>
+              <p class="home-preview-footer">ONE WORD · THIRTY SECONDS</p>
             </div>
           </section>
           <section class="home-howto" id="how-to-play" aria-labelledby="how-to-play-title">
