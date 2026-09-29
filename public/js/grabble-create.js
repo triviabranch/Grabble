@@ -17,7 +17,7 @@
       (singlePage ? "" : '<i></i>') +
       '</div></div><div class="setup-page active" data-page="0"><p class="setup-kicker">GAME FORMAT</p><h2 id="setup-title">Choose a format</h2><p>Select how many rounds to play.</p><div class="setup-options"><button class="setup-option selected" aria-pressed="true" data-mode="single"><strong>Single round</strong><small>One round.</small></button><button class="setup-option" aria-pressed="false" data-mode="competition"><strong>Competition</strong><small>Five rounds.</small></button></div>' +
       (singlePage
-        ? (surface === "host" ? '<div class="setup-field"><input id="name" maxlength="18" placeholder="YOUR NAME (OPTIONAL)" autocomplete="name"></div>' : "") + '<div class="setup-page-actions"><button class="next" id="setup-next">Open lobby</button></div></div>'
+        ? '<div class="setup-page-actions"><button class="next" id="setup-next">Open lobby</button></div></div>'
         : '<div class="setup-page-actions"><button class="next" id="setup-next-first">Next</button></div></div><div class="setup-page" data-page="1"><p class="setup-kicker">LOBBY</p><h2>Open the lobby</h2><p><span id="setup-summary">Single round</span></p>') +
       (!singlePage && needsName
         ? '<div class="setup-field"><input id="name" maxlength="18" placeholder="YOUR NAME" autocomplete="name"></div>'
@@ -122,11 +122,8 @@
     api.shell(
       '<section class="center home-hero"><div class="home-panel panel"><p class="home-kicker">BUILD YOUR WORD</p><h1>Build the longest word before time runs out.</h1><p class="home-copy">Grab letters from the pool, make your move and beat the room.</p><div class="home-actions"><button id="open-setup">Create a game</button><button class="secondary" id="open-join">Join a room</button></div></div></section>',
     );
-    // A game homepage creates a hosted room. `/play/[CODE]` is join-only;
-    // the creator must retain the host/controller session and may then join
-    // their own room as a player from that device.
     document.getElementById("open-setup").onclick = () =>
-      location.href = "/host";
+      (location.href = "/host");
     document.getElementById("open-join").onclick = () => {
       const joinModal = document.createElement("div");
       joinModal.className = "setup-modal";
