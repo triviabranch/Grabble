@@ -1125,3 +1125,16 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
 .shell-play .player-result-actions{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;padding-bottom:4px}
 .shell-play .player-result-actions button{min-width:145px}
 @media(max-width:520px){.shell-play .player-result-stage{max-height:calc(100dvh - 142px);gap:9px}.shell-play .player-result-card{padding:10px 11px}.shell-play .player-result-card-head{font-size:.9rem}.shell-play .player-result-word{gap:4px}.shell-play .player-word-tile{flex-basis:36px;width:36px;height:36px;font-size:.95rem}.shell-play .player-result-actions button{min-width:128px;padding:.7rem .85rem}}
+
+
+/* Public homepage actions: Play Now, Join a room, and on-demand How to play. */
+.home-howto-link{display:block;margin:16px auto 0;padding:4px 10px;border:0;background:transparent;color:var(--peach);font:inherit;font-size:.82rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;text-decoration:underline;text-underline-offset:4px;cursor:pointer}
+.home-howto-link:hover{color:var(--bone)}
+.home-howto-card{max-width:620px!important}
+.home-howto-card .setup-page{flex:1;justify-content:center}
+.home-howto-card .setup-page h2{margin:.25em 0 .8em}
+.home-howto-card .rules-list{width:min(470px,100%);display:grid;gap:10px;margin:0 auto;padding:0;list-style:none}
+.home-howto-card .rules-list p{display:grid;grid-template-columns:32px 1fr;align-items:center;gap:11px;width:100%;max-width:none;margin:0;padding:11px 13px;border:1px solid rgba(255,241,220,.18);border-radius:16px;background:rgba(255,241,220,.07);text-align:left;color:var(--bone);font-size:clamp(.95rem,3.5vw,1.08rem);line-height:1.25}
+.home-howto-card .rules-list b{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:var(--hot);color:var(--ink);font-size:.75rem}
+.home-howto-card .setup-footer{margin-top:18px}
+@media(max-width:520px){.home-howto-card{width:calc(100vw - 24px)!important;padding:18px 16px 16px!important}.home-howto-card .rules-list{gap:8px}.home-howto-card .rules-list p{padding:10px 11px;font-size:.92rem}}
