@@ -23,7 +23,7 @@ The shells load the shared surface primitives and stylesheet. Each shell then lo
 - `public/js/grabble-room-common.js`
 - `public/css/grabble.css`
 
-The presentation monolith `public/js/grabble-client.js` has been removed under TBLive 1.35.
+The presentation monolith `public/js/grabble-client.js` has been removed under TBLive 1.37.
 
 The Worker maps the clean TBLive routes to these shells. The public routes remain canonical and must not expose `.html` URLs or route fallbacks.
 
