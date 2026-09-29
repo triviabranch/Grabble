@@ -82,7 +82,7 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
   align-items:stretch!important;
 }
 
-/* Final TBLive 1.34 Grabble TV create composition.
+/* Final TBLive 1.37 Grabble TV create composition.
    This deliberately supersedes the earlier exploratory TV rules above. */
 .shell-tv .tv-create-home{
   width:min(900px,calc(100vw - 12vw))!important;
@@ -932,7 +932,7 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
 }
 
 
-/* TBLive 1.34 TV create density: shared setup semantics, bounded TV adaptation. */
+/* TBLive 1.37 TV create density: shared setup semantics, bounded TV adaptation. */
 .setup-modal-tv{
   padding:20px 28px!important;
   place-items:center!important;
@@ -1054,7 +1054,7 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
   .setup-modal-tv .setup-footer{padding-top:12px!important}
 }
 
-/* The explainer is the single post-title bridge required by TBLive 1.34. */
+/* The explainer is the single post-title bridge required by TBLive 1.37. */
 .tv-explainer-modal .tv-explainer-card{
   width:min(720px,calc(100vw - 48px))!important;
   height:min(480px,calc(100dvh - 48px))!important;
@@ -1101,14 +1101,14 @@ button:focus-visible{outline:4px solid var(--bone);outline-offset:4px}.tv-bridge
 }
 .setup-modal-tv .setup-page-actions{justify-content:flex-end!important}
 
-/* TBLive 1.34 TV browser-chrome safe area. 100dvh is the usable viewport
+/* TBLive 1.37 TV browser-chrome safe area. 100dvh is the usable viewport
    reported below visible Chromium chrome; env() is additive only on clients
    that expose an actual top inset. Every fixed TV layer inherits this shell. */
 :root{--tblive-tv-top-safe:env(safe-area-inset-top,0px)}
 .shell-tv,.shell-display{height:calc(100dvh - var(--tblive-tv-top-safe));min-height:0;max-height:calc(100dvh - var(--tblive-tv-top-safe));padding-top:max(clamp(10px,3vw,42px),var(--tblive-tv-top-safe));}
 .shell-tv>.display-result-stage,.shell-display>.display-result-stage{height:calc(100dvh - var(--tblive-tv-top-safe))!important;max-height:calc(100dvh - var(--tblive-tv-top-safe))!important;padding-top:max(clamp(18px,4vw,64px),var(--tblive-tv-top-safe))!important;}
 
-/* TBLive 1.35 player-only gameplay and results */
+/* TBLive 1.37 player-only gameplay and results */
 .shell-play .player-word-tile{display:grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border-radius:12px;background:var(--bone);color:var(--ink);font-size:1.05rem;font-weight:1000;box-shadow:0 4px 0 var(--deep)}
 .shell-play .word-empty{display:block;width:100%;text-align:center;color:var(--peach);font-size:.85rem;font-weight:800;padding:10px}
 .shell-play .player-result-stage{width:100%;max-width:680px;max-height:calc(100dvh - 150px);overflow:auto;padding:8px 0 18px;display:flex;flex-direction:column;gap:12px}
