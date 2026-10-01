@@ -1,48 +1,24 @@
-# Grabble HTML-per-surface migration
+# Grabble TBLive surface architecture
 
-## Purpose
+## Canonical routes
 
-This is the controlled Grabble migration from the original presentation monolith to the TBLive 1.35 HTML-per-surface pattern.
+`/`, `/host`, `/host/[CODE]`, `/play/[CODE]`, `/display/[CODE]`, `/tv`, `/tv/[CODE]` and `/admin` are served from distinct static HTML shells. Unknown routes return 404. The shell owns its wordmark/header and mounts the matching surface controller into its own `#surface-content` element.
 
-## Preserved contract
+## Shared runtime boundaries
 
-The migration does not change:
+- `src/worker.js` owns route dispatch and validates the create request context/version.
+- `src/room.js` owns authoritative room state, player registration, actions and lifecycle.
+- `public/js/grabble-transport.js` owns WebSocket connection and reconnect.
+- `public/js/grabble-surface.js` contains route identity, a generic content mount and connection helpers; it does not generate shell markup.
+- Each surface controller owns the page-level render and binds only to its shell.
+- `public/js/grabble-create.js` defines setup choices once and shares that definition between host and TV creation.
 
-- TBLive contract 1.35 canonical routes;
-- Durable Object room authority;
-- WebSocket transport;
-- player identity or reconnect behaviour;
-- scoring and dictionary validation;
-- room phases, expiry or admin kill;
-- hostless TV capability;
-- the mobile \`/play/[CODE]\` join-lobby flow.
+## v1.38 flow
 
-## Changed boundary
+Homepage `Play Now` enters `/host`, showing one opaque 2.5-second splash and then the `Your Name` step before game setup. The host name and player token are included with creation; the host is present in the first room snapshot and can join on the same device. Homepage `Join Room` has its own one-time splash, then captures room code and player name in one form. Direct and QR player joins skip the splash.
 
-The Worker serves explicit static shells from \`public/surfaces/\`. Each canonical surface has its own controller and browser-test boundary. Shared modules are limited to transport, create flow, room-state primitives, player input, identity, tokens, and design primitives.
+Host and TV use the same game format options and room config. Host creation returns `/host/[CODE]`; TV creation returns `/tv/[CODE]`. TV portal launch passes `?entry=portal` to show its one-time splash. Read-only display and TV projections connect from their canonical room URLs without a projection token; only the authoritative host or TV controller can progress a room.
 
-The routes remain clean:
+## Remaining adoption checks
 
-\`/\`, \`/play/[CODE]\`, \`/display/[CODE]\`, \`/tv/[CODE]\`, \`/host/[CODE]\`, \`/admin\`.
-
-Unknown paths return 404 rather than silently loading the player shell.
-
-## Current module boundary
-
-- \`src/index.js\` — Worker entrypoint and Durable Object exports;
-- \`src/worker.js\` — HTTP, static-asset and API routing;
-- \`src/room.js\` — room Durable Object, protocol, timers and game state;
-- \`src/admin.js\` — admin Durable Object and room metadata;
-- \`src/shared.js\` — shared server helpers and constants;
-- \`public/js/grabble-surface.js\` — shell, identity, room connection and shared primitives;
-- \`public/js/grabble-room-common.js\` — small room-state presentation primitives;
-- \`public/js/grabble-create.js\` — shared create flow;
-- \`public/js/grabble-transport.js\` — room WebSocket/token/reconnect behavior;
-- \`public/js/grabble-player.js\` — shared player input runtime;
-- \`public/js/grabble-home.js\`, \`grabble-play.js\`, \`grabble-tv.js\`, \`grabble-display.js\`, \`grabble-host.js\`, \`grabble-admin-surface.js\` — independently addressed surface controllers.
-
-No page-level controller imports another surface controller, and no controller falls back to the legacy \`grabble-client.js\` renderer.
-
-## Validation
-
-The v1.35 workflow runs static route/shell checks, protocol and persistence gates, and a hostless browser flow covering create → lobby → join → launch → countdown → game → results. Admin API/reporting remains explicitly out of scope.
+Each shell loads `grabble-base.css` for shared primitives and its own `grabble-[surface].css` stylesheet. The full host, join, projection and TV replay browser flow passes locally. The external TriviaBranch TV launcher still needs to append `?entry=portal` when handing off to Grabble. A hosted CI run and Fire TV/Silk, mobile Safari/Chrome and HDMI display viewport evidence remain before recording full v1.38 conformance.

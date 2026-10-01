@@ -10,9 +10,10 @@ const adminClient = await read('public/js/grabble-admin.js');
 const workflow = await read('.github/workflows/tblive-conformance.yml');
 const capabilities = JSON.parse(await read('tblive.capabilities.json'));
 
-assert.equal(capabilities.contractVersion, '1.37');
+assert.equal(capabilities.contractVersion, '1.38');
 assert.equal(capabilities.capabilities.hostlessTv, true);
 assert.equal(capabilities.capabilities.tvCreatesRoom, true);
+assert.deepEqual(capabilities.capabilities.creationContexts, ['host', 'tv']);
 for (const event of ['hello', 'authenticated', 'snapshot', 'state_changed', 'phase_changed', 'player_joined', 'player_left', 'timer_started', 'timer_updated', 'score_updated', 'finished', 'room_closed']) {
   assert.match(room, new RegExp("['\"]" + event + "['\"]"), 'missing protocol event ' + event);
 }
@@ -20,12 +21,16 @@ assert.match(room, /type, payload/);
 assert.match(room, /requestId/);
 assert.match(room, /MALFORMED_MESSAGE|INVALID_ACTION|ACTION_NOT_ALLOWED/);
 assert.match(room, /reply\([^\n]+['"]ack['"]/);
-assert.match(room, /displayToken/);
+assert.match(room, /creationContext/);
+assert.match(room, /isHost/);
+assert.match(room, /this\.data\.creationContext !== 'host'/);
+assert.match(room, /role = 'tv-viewer'/);
 assert.match(room, /setAlarm|alarm\(/);
 assert.match(room, /deleteAlarm/);
 assert.match(room, /double-word|triple-word/);
 assert.match(transport, /seq > lastSeq \+ 1/);
-assert.match(transport, /displayToken/);
+assert.doesNotMatch(room, /UNAUTHORISED_DISPLAY_ROLE|displayToken/);
+assert.doesNotMatch(transport, /displayToken/);
 assert.doesNotMatch(admin + worker, /heartbeat|lastHeartbeat|lastSeen/);
 assert.doesNotMatch(adminClient, /lastSeen/);
 assert.match(admin, /u\.pathname === ['"]\/register['"]/);
@@ -33,6 +38,12 @@ assert.match(room, /\/unregister\//);
 assert.doesNotMatch(transport, /setInterval\([^)]*fetch|setInterval\([^)]*api/);
 assert.match(workflow, /browser-flow/);
 assert.match(worker, /admin\/register/, 'created rooms must be visible to the local admin namespace');
+assert.match(worker, /contractVersion !== '1\.38'/);
+assert.match(worker, /creationContext === 'host' \? 1 : 0/);
+assert.match(await read('public/js/grabble-create.js'), /creationContext: context/);
+assert.match(await read('public/js/grabble-create.js'), /hostPlayer: context === "host" \? \{ displayName: hostName \}/);
+assert.match(await read('public/js/grabble-create.js'), /2500/);
+assert.match(await read('public/js/grabble-create.js'), /grabble-entry-splash/);
 
 const controllers = {
   home: 'public/js/grabble-home.js',
@@ -51,4 +62,4 @@ assert.match(await read('public/js/grabble-play.js'), /GrabblePlayer\.bind/);
 const play = await read('public/js/grabble-play.js');
 assert.match(play, /phase === "countdown"/);
 assert.match(play, /setInterval\(paint, 100\)/);
-console.log('TBLive 1.37 protocol, release-gate and controller-boundary conformance passed');
+console.log('TBLive 1.38 protocol, creation-context and controller-boundary checks passed');

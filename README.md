@@ -1,6 +1,6 @@
 # Grabble
 
-A TBLive word-building game.
+A TBLive 1.38 word-building game. The consumed contract version is declared in `tblive.capabilities.json` and on each canonical surface.
 
 Players continuously drag moving letter tokens from a shared pool into the next slot on their own word line. Grabble uses `/play/[CODE]`, `/display/[CODE]`, `/tv/[CODE]`, `/host/[CODE]` and `/admin`, with transient Durable Object room state and no D1/R2 dependency.
 
@@ -17,13 +17,13 @@ Each canonical browser surface has its own static HTML shell, including the expl
 - `public/surfaces/host.html`
 - `public/surfaces/admin.html`
 
-The shells load the shared surface primitives and stylesheet. Each shell then loads its own controller:
+Each shell contains its own static header and content mount, then loads its own controller. Shared JavaScript is limited to transport and small browser primitives:
 
 - `public/js/grabble-surface.js`
 - `public/js/grabble-room-common.js`
-- `public/css/grabble.css`
+- `public/css/grabble-base.css` and the matching `public/css/grabble-[surface].css`
 
-The presentation monolith `public/js/grabble-client.js` has been removed under TBLive 1.37.
+The presentation monolith `public/js/grabble-client.js` and all-surface stylesheet have been removed. Each static shell loads small shared primitives and its own surface stylesheet.
 
 The Worker maps the clean TBLive routes to these shells. The public routes remain canonical and must not expose `.html` URLs or route fallbacks.
 

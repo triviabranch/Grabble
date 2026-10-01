@@ -1,10 +1,10 @@
 (function () {
   const parts = location.pathname.split("/").filter(Boolean);
-  const mode = parts[0] || "play";
+  const mode = parts[0] || "home";
   const code = parts[1] || "";
-  const app = document.getElementById("app");
   let state = null;
   let me = null;
+  let connectionRole = null;
   let leaving = false;
   let leaveTimer = null;
   const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (x) => ({
@@ -12,28 +12,14 @@
   }[x]));
   const logo = () => '<img src="/assets/grabble-wordmark.png" alt="Grabble">';
   const shell = (body) => {
-    let root = app.querySelector("main.shell-" + mode);
-    if (!root) {
-      const back = mode === "tv"
-        ? '<button class="tv-back" id="tv-back" type="button" aria-label="Back to TriviaBranch TV">← TriviaBranch</button>'
-        : "";
-      const label = mode === "play" ? "PLAYER" : mode === "display" ? "DISPLAY" : mode === "host" ? "HOST" : "";
-      app.innerHTML = '<main class="shell shell-' + mode + '"><header class="brand">' + back + logo() + (label ? "<small>" + label + "</small>" : "") + "</header></main>";
-      root = app.querySelector("main.shell-" + mode);
-      document.getElementById("tv-back")?.addEventListener("click", () => {
-        leaving = true;
-        location.href = "https://tv.triviabranch.com";
-      });
-    }
-    const header = root.querySelector(":scope > .brand");
-    while (root.lastElementChild && root.lastElementChild !== header) root.removeChild(root.lastElementChild);
-    root.insertAdjacentHTML("beforeend", body);
+    const content = document.getElementById("surface-content");
+    if (content) content.innerHTML = body;
   };
-  const create = async (selectedMode) => {
+  const create = async (request) => {
     const response = await fetch("/api/create", {
       method: "POST",
       headers: {"content-type":"application/json"},
-      body: JSON.stringify({mode: selectedMode}),
+      body: JSON.stringify(request),
     });
     const payload = await response.json().catch(() => null);
     if (!response.ok || !payload?.code) throw new Error(payload?.error || "Room creation failed");
@@ -48,10 +34,12 @@
       mode,
       getState: () => state,
       isLeaving: () => leaving,
-      onHello: (message) => {
+      onHello: (message, actualRole) => {
         me = message.playerId;
+        connectionRole = actualRole || connectionRole;
         window.GrabbleSurface.onHello?.(message);
       },
+      onAuthenticated: (_message, actualRole) => { connectionRole = actualRole || connectionRole || role; },
       onState: (message) => {
         const previous = state;
         state = message;
@@ -82,7 +70,9 @@
   };
   window.GrabbleSurface = {
     mode, code, esc, logo, shell, create, configureCreate, connect, leave,
+    setLeaving: (value = true) => { leaving = value; },
     getState: () => state, getMe: () => me,
+    getConnectionRole: () => connectionRole,
     setState: (next) => { state = next; },
     getLeaving: () => leaving,
   };

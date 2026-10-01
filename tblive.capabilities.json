@@ -1,5 +1,5 @@
 {
-  "contractVersion": "1.37",
+  "contractVersion": "1.38",
   "capabilities": {
     "mobilePlay": true,
     "playableWithoutSharedScreen": true,
@@ -7,11 +7,16 @@
     "tvDepth": "full",
     "tvCreatesRoom": true,
     "hostedDisplay": true,
-    "professionalHostMode": false
+    "professionalHostMode": true,
+    "creationContexts": [
+      "host",
+      "tv"
+    ]
   },
   "routes": {
     "mobile": "/play/[CODE]",
     "tv": "/tv/[CODE]",
-    "display": "/display/[CODE]"
+    "display": "/display/[CODE]",
+    "host": "/host/[CODE]"
   }
 }

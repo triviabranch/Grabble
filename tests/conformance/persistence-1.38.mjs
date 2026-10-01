@@ -18,7 +18,6 @@ await room.init(new Request('https://room/init', {
     code: 'TEST',
     mode: 'single',
     controlToken: 'control',
-    displayToken: 'display',
   }),
 }));
 const afterInit = writes;
@@ -35,4 +34,23 @@ assert.equal(writes, afterInit + 1, 'a meaningful lifecycle transition must pers
 for (let i = 0; i < 25; i++) await room.broadcastSnapshot(false);
 assert.equal(writes, afterInit + 1, 'repeated transport snapshots must remain write-free');
 
-console.log('TBLive 1.37 bounded-write room-flow conformance passed');
+console.log('TBLive 1.38 bounded-write room-flow conformance passed');
+
+let hostSnapshot = null;
+const hostRoom = new GrabbleRoom({ storage: {
+  async get() { return hostSnapshot; },
+  async put(key, value) { hostSnapshot = value; },
+  async deleteAlarm() {},
+  setAlarm() { return Promise.resolve(); },
+} }, {});
+await hostRoom.init(new Request('https://room/init', {
+  method: 'POST',
+  body: JSON.stringify({ code: 'HOST', mode: 'single', creationContext: 'host', hostName: 'Ash', playerToken: 'host-player-token' }),
+}));
+const createdState = hostRoom.safe();
+assert.equal(createdState.controllerRole, 'host');
+assert.equal(createdState.players.length, 1, 'host must be present in the first room snapshot');
+assert.equal(createdState.players[0].name, 'Ash');
+assert.equal(createdState.players[0].isHost, true);
+assert.equal(createdState.ownerId, 'host-player');
+console.log('TBLive 1.38 host creation registers the host as the first player');

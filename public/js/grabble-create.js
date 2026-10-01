@@ -1,193 +1,140 @@
 (function () {
   let api = {};
-  function configure(next) {
-    api = next;
-  }
-  function openCreateFlow(surface) {
+
+  // One setup definition drives both host and TV room creation. The surfaces
+  // can style it independently, but the choices and submitted config stay the same.
+  const createDefinition = Object.freeze({
+    options: [
+      { id: "single", title: "Single game", detail: "One quick game." },
+      { id: "competition", title: "Competition", detail: "Play a series of rounds." },
+    ],
+  });
+
+  const configure = (next) => { api = next; };
+  const opaqueSplash = (after) => {
+    const splash = document.createElement("div");
+    splash.className = "tblive-entry-splash";
+    splash.setAttribute("aria-label", "Grabble");
+    splash.innerHTML = api.logo();
+    document.body.append(splash);
+    window.setTimeout(() => {
+      splash.remove();
+      after?.();
+    }, 2500);
+  };
+
+  function createSetup(context, hostName = "") {
+    let chosen = "single";
+    const tv = context === "tv";
     const modal = document.createElement("div");
-    modal.className = "setup-modal setup-modal-" + surface;
-    const needsName = surface === "play";
-    const singlePage = surface === "tv" || surface === "host";
-    const backTarget = surface === "tv" ? "TriviaBranch TV" : "Grabble";
+    modal.className = "setup-modal" + (tv ? " setup-modal-tv" : " setup-modal-host");
     modal.innerHTML =
-      '<div class="setup-backdrop"></div><section class="setup-card" role="dialog" aria-modal="true" aria-labelledby="setup-title"><div class="setup-head setup-head-tv"><button class="setup-tv-back" id="setup-tv-back" type="button" aria-label="Back to ' + backTarget + '"><span aria-hidden="true">←</span> ' + backTarget + '</button>' +
-      '<p class="setup-step-label" id="setup-step-label">SETUP · 1 OF ' +
-      (singlePage ? "1" : "2") +
-      '</p><div class="setup-progress" aria-label="Setup progress"><i class="active"></i>' +
-      (singlePage ? "" : '<i></i>') +
-      '</div></div><div class="setup-page active" data-page="0"><p class="setup-kicker">GAME FORMAT</p><h2 id="setup-title">Choose a format</h2><p>Select how many rounds to play.</p><div class="setup-options"><button class="setup-option selected" aria-pressed="true" data-mode="single"><strong>Single round</strong><small>One round.</small></button><button class="setup-option" aria-pressed="false" data-mode="competition"><strong>Competition</strong><small>Five rounds.</small></button></div>' +
-      (singlePage
-        ? '<div class="setup-page-actions"><button class="next" id="setup-next">Open lobby</button></div></div>'
-        : '<div class="setup-page-actions"><button class="next" id="setup-next-first">Next</button></div></div><div class="setup-page" data-page="1"><p class="setup-kicker">LOBBY</p><h2>Open the lobby</h2><p><span id="setup-summary">Single round</span></p>') +
-      (!singlePage && needsName
-        ? '<div class="setup-field"><input id="name" maxlength="18" placeholder="YOUR NAME" autocomplete="name"></div>'
-        : "") +
-      (singlePage
-        ? ""
-        : '<div class="setup-footer"><button class="back" id="setup-back">Back</button><button class="next" id="setup-next">Open lobby</button></div></div>') +
-      "</section>";
+      '<div class="setup-backdrop"></div><section class="setup-card" role="dialog" aria-modal="true" aria-labelledby="setup-title">' +
+      '<div class="setup-head setup-head-tv">' + (tv ? '<button class="setup-tv-back" id="setup-tv-back" type="button" aria-label="Back to TriviaBranch TV">← TriviaBranch</button>' : "") + api.logo() +
+      '<p class="setup-step-label">GAME SETUP</p></div><div class="setup-page active"><p class="setup-kicker">GAME FORMAT</p><h2 id="setup-title">Choose a format</h2><div class="setup-options">' +
+      createDefinition.options.map((option, index) => '<button class="setup-option' + (index === 0 ? " selected" : "") + '" aria-pressed="' + (index === 0 ? "true" : "false") + '" data-mode="' + option.id + '"><strong>' + option.title + '</strong><small>' + option.detail + "</small></button>").join("") +
+      '</div><div class="setup-page-actions"><button class="next" id="create-room">Open lobby</button></div></div></section>';
     document.body.append(modal);
-    let page = 0,
-      chosen = "single";
-    const pages = [...modal.querySelectorAll(".setup-page")],
-      dots = [...modal.querySelectorAll(".setup-progress i")],
-      summary = modal.querySelector("#setup-summary"),
-      stepLabel = modal.querySelector("#setup-step-label"),
-      setPage = (n) => {
-        page = n;
-        pages.forEach((x, i) => x.classList.toggle("active", i === page));
-        dots.forEach((x, i) => x.classList.toggle("active", i === page));
-        if (stepLabel)
-          stepLabel.textContent = "SETUP · " + (n + 1) + " OF " + pages.length;
-        if (summary)
-          summary.textContent =
-            chosen === "competition" ? "Competition · 5 rounds" : "Single round";
-      };
-    modal.querySelectorAll("[data-mode]").forEach(
-      (b) =>
-        (b.onclick = () => {
-          chosen = b.dataset.mode;
-          modal.querySelectorAll("[data-mode]").forEach((x) => {
-            const selected = x === b;
-            x.classList.toggle("selected", selected);
-            x.setAttribute("aria-pressed", selected ? "true" : "false");
-          });
-        }),
-    );
-    modal.querySelector("#setup-next-first")?.addEventListener("click", () => {
-      setPage(1);
-      if (needsName) setTimeout(() => modal.querySelector("#name").focus(), 0);
-    });
-    modal.querySelector("#setup-back")?.addEventListener("click", () => setPage(0));
-    modal
-      .querySelector("#setup-tv-back")
-      ?.addEventListener("click", () => modal.remove());
-    modal.querySelector("#setup-next").onclick = async () => {
-      const name = needsName
-        ? modal.querySelector("#name").value.trim() || "Player"
-        : "";
-      if (surface === "play") localStorage.setItem("grabble-pending-name", name);
-      const btn = modal.querySelector("#setup-next");
-      btn.disabled = true;
-      btn.textContent = "Creating…";
+    modal.querySelectorAll("[data-mode]").forEach((button) => button.addEventListener("click", () => {
+      chosen = button.dataset.mode;
+      modal.querySelectorAll("[data-mode]").forEach((option) => {
+        const selected = option === button;
+        option.classList.toggle("selected", selected);
+        option.setAttribute("aria-pressed", String(selected));
+      });
+    }));
+    modal.querySelector("#setup-tv-back")?.addEventListener("click", () => modal.remove());
+    modal.querySelector("#create-room").addEventListener("click", async (event) => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      button.textContent = "Creating…";
       try {
-        const x = await api.create(chosen);
-        if (surface === "tv" && x.controlToken)
-          localStorage.setItem("grabble-tv-token", x.controlToken);
-        if (surface === "host" && x.controlToken)
-          localStorage.setItem("grabble-host-token", x.controlToken);
-        if (x.displayToken)
-          localStorage.setItem("grabble-display-token:" + x.code, x.displayToken);
-        if (surface === "play")
-          localStorage.setItem(
-            "grabble-pending-join",
-            JSON.stringify({ code: x.code, name }),
-          );
-        location.href =
-          "/" + (surface === "play" ? "play" : surface) + "/" + x.code;
-      } catch (e) {
-        btn.disabled = false;
-        btn.textContent = "Open lobby";
+        const result = await api.create({ gameId: "grabble", contractVersion: "1.38", creationContext: context, config: { mode: chosen }, hostPlayer: context === "host" ? { displayName: hostName } : undefined });
+        if (result.controlToken) localStorage.setItem("grabble-" + context + "-token:" + result.code, result.controlToken);
+        if (result.playerToken) {
+          localStorage.setItem("grabble-player-token:" + result.code, result.playerToken);
+          localStorage.setItem("grabble-name:" + result.code, hostName);
+        }
+        if (result.creationContext !== context || result.controllerRole !== context || result.route !== "/" + context + "/" + result.code) throw new Error("Room setup returned the wrong controller route.");
+        location.href = result.route;
+      } catch (error) {
+        button.disabled = false;
+        button.textContent = "Open lobby";
         let note = modal.querySelector(".create-error");
         if (!note) {
           note = document.createElement("p");
           note.className = "status create-error";
-          modal.querySelector(".setup-page.active").append(note);
+          modal.querySelector(".setup-page").append(note);
         }
-        note.textContent =
-          e?.message || "Could not create the room. Try again.";
+        note.textContent = error?.message || "Could not create the room. Try again.";
       }
-    };
-    modal.querySelector(".setup-backdrop").onclick = () => modal.remove();
-  }
-  function tvExplainer() {
-    const modal = document.createElement("div");
-    modal.className = "setup-modal tv-explainer-modal";
-    modal.innerHTML =
-      '<div class="setup-backdrop"></div><section class="setup-card tv-explainer-card" role="dialog" aria-modal="true" aria-labelledby="tv-explainer-title"><div class="setup-head">' +
-      api.logo() +
-      '</div><div class="setup-page active"><p class="eyebrow">HOW TO PLAY</p><h2 id="tv-explainer-title">Build the longest word</h2><p>Take letters from the pool. Make the longest word before time runs out.</p></div><div class="setup-footer"><span></span><button class="next" id="tv-explainer-next">Continue</button></div></section>';
-    document.body.append(modal);
-    modal.querySelector("#tv-explainer-next").onclick = () => {
-      modal.remove();
-      openCreateFlow("tv");
-    };
-    modal.querySelector(".setup-backdrop").onclick = () => modal.remove();
-  }
-  function tvHome() {
-    api.shell('<section class="center tv-create-home" aria-label="Grabble TV setup"></section>');
-    tvExplainer();
-  }
-  function home() {
-    api.shell(
-      `<section class="grabble-home" aria-label="Grabble homepage">
-        <header class="home-nav">
-          <a class="home-nav-logo" href="/" aria-label="Grabble home">${api.logo()}</a>
-          <nav aria-label="Main navigation">
-            <a href="#how-to-play">How to play</a>
-          </nav>
-        </header>
-        <main>
-          <section class="home-hero">
-            <div class="home-hero-copy">
-              <p class="home-kicker">GRAB IT. BUILD IT. PLAY IT.</p>
-              <h1>Build the longest word before time runs out.</h1>
-              <p class="home-copy">Grab letters from the pool, make your move and beat the room. Play together on phones with the game on screen.</p>
-              <div class="home-actions">
-                <a class="home-primary" href="/host">Play Now <span aria-hidden="true">→</span></a>
-                <button class="secondary" data-open-join type="button">Join a room <span aria-hidden="true">↗</span></button>
-              </div>
-              <p class="home-note">No app. No downloads. Just a room code and a race for the longest word.</p>
-            </div>
-            <div class="home-preview" aria-label="Grabble game preview">
-              <p class="home-preview-kicker">THE GRABBLE RULE</p>
-              <p class="home-preview-label">NEXT LETTER ONLY</p>
-              <h2>Grab the next letter. Build your word. Beat the clock.</h2>
-              <div class="home-preview-tiles" aria-hidden="true">
-                <span>G</span><span>R</span><span class="selected">A</span><span>_</span>
-              </div>
-              <p class="home-preview-footer">ONE WORD · THIRTY SECONDS</p>
-            </div>
-          </section>
-          <section class="home-howto" id="how-to-play" aria-labelledby="how-to-play-title">
-            <p class="home-kicker">HOW TO PLAY</p>
-            <h2 id="how-to-play-title">Four steps. One very long word.</h2>
-            <p class="home-section-copy">One shared screen, everyone’s phone, and a finish nobody can predict.</p>
-            <ol class="home-steps">
-              <li><span>01</span><div><h3>Join</h3><p>Scan the room QR code or enter the four-character code.</p></div></li>
-              <li><span>02</span><div><h3>Grab</h3><p>Take the next letter from the pool.</p></div></li>
-              <li><span>03</span><div><h3>Build</h3><p>Add letters in order to make your longest word.</p></div></li>
-              <li><span>04</span><div><h3>Beat the clock</h3><p>Score your word when time runs out.</p></div></li>
-            </ol>
-          </section>
-          <footer class="home-footer">MADE FOR GAME NIGHTS · WORKS ON THE BIG SCREEN · PLAYS ON PHONES</footer>
-        </main>
-      </section>`,
-    );
-    const openJoin = () => {
-      const joinModal = document.createElement("div");
-      joinModal.className = "setup-modal";
-      joinModal.innerHTML =
-        '<div class="setup-backdrop"></div><section class="setup-card join-modal-card" role="dialog" aria-modal="true" aria-labelledby="join-title"><div class="setup-head">' +
-        api.logo() +
-        '</div><div class="setup-page active"><p class="eyebrow">JOIN A ROOM</p><h2 id="join-title">Room code</h2><p>Enter the four-character code shown on the display.</p><div class="setup-field"><input id="room" maxlength="4" placeholder="ROOM CODE" autocomplete="off" inputmode="text"></div></div><div class="setup-footer"><button class="back" id="close-join">Cancel</button><button class="next" id="join">Join room</button></div></section>';
-      document.body.append(joinModal);
-      const close = () => joinModal.remove();
-      joinModal.querySelector("#close-join").onclick = close;
-      joinModal.querySelector(".setup-backdrop").onclick = close;
-      joinModal.querySelector("#join").onclick = () => {
-        const c = joinModal.querySelector("#room").value.trim().toUpperCase();
-        if (/^[A-Z0-9]{4}$/.test(c)) location.href = "/play/" + c;
-        else joinModal.querySelector("#room").focus();
-      };
-      joinModal.querySelector("#room").focus();
-    };
-    document.querySelectorAll("[data-open-join]").forEach((button) => {
-      button.addEventListener("click", openJoin);
     });
   }
-  function hostHome() {
-    openCreateFlow("host");
+
+  function hostNameEntry() {
+    const modal = document.createElement("div");
+    modal.className = "setup-modal host-name-modal";
+    modal.innerHTML = '<div class="setup-backdrop"></div><section class="setup-card" role="dialog" aria-modal="true" aria-labelledby="host-name-title"><div class="setup-head">' + api.logo() + '</div><div class="setup-page active"><p class="eyebrow">HOST</p><h2 id="host-name-title">Your Name</h2><p>Your name will appear in the room as its first player.</p><div class="setup-field"><input id="host-name" maxlength="18" placeholder="YOUR NAME" autocomplete="name"></div><div class="setup-page-actions"><button class="next" id="confirm-host-name">Continue</button></div></div></section>';
+    document.body.append(modal);
+    const input = modal.querySelector("#host-name");
+    input.value = localStorage.getItem("grabble-host-name") || "";
+    input.focus();
+    const proceed = () => {
+      const name = input.value.trim().slice(0, 18);
+      if (!name) { input.focus(); return; }
+      localStorage.setItem("grabble-host-name", name);
+      modal.remove();
+      createSetup("host", name);
+    };
+    modal.querySelector("#confirm-host-name").addEventListener("click", proceed);
+    input.addEventListener("keydown", (event) => { if (event.key === "Enter") proceed(); });
   }
-  window.GrabbleCreate = { configure, tvHome, home, hostHome, openCreateFlow };
+
+  function tvHome() {
+    createSetup("tv");
+  }
+
+  function home() {
+    api.shell('<section class="center home-hero"><div class="home-panel panel"><p class="home-kicker">GRABBLE</p><h1>Build the longest word before time runs out.</h1><p class="home-copy">Grab letters from the pool. Make your word before the clock runs out.</p><div class="home-actions"><button id="open-host">Play Now</button><button class="secondary" id="open-join">Join Room</button></div></div></section>');
+    document.getElementById("open-host").addEventListener("click", () => {
+      sessionStorage.setItem("grabble-entry-splash", "host");
+      location.href = "/host";
+    });
+    document.getElementById("open-join").addEventListener("click", () => {
+      opaqueSplash(joinRoomForm);
+    });
+  }
+
+  function joinRoomForm() {
+    const modal = document.createElement("div");
+    modal.className = "setup-modal join-room-modal";
+    modal.innerHTML = '<div class="setup-backdrop"></div><section class="setup-card" role="dialog" aria-modal="true" aria-labelledby="join-title"><div class="setup-head">' + api.logo() + '</div><div class="setup-page active"><p class="eyebrow">JOIN ROOM</p><h2 id="join-title">Enter the room code</h2><div class="setup-field"><input id="room-code" maxlength="4" placeholder="ROOM CODE" autocomplete="off" inputmode="text"></div><label class="setup-field"><span>Your Name</span><input id="join-name" maxlength="18" placeholder="YOUR NAME" autocomplete="name"></label></div><div class="setup-footer"><button class="back" id="cancel-join">Cancel</button><button class="next" id="join-room">Join Room</button></div></section>';
+    document.body.append(modal);
+    const codeInput = modal.querySelector("#room-code");
+    const nameInput = modal.querySelector("#join-name");
+    nameInput.value = localStorage.getItem("grabble-last-player-name") || "";
+    const close = () => modal.remove();
+    modal.querySelector("#cancel-join").addEventListener("click", close);
+    modal.querySelector(".setup-backdrop").addEventListener("click", close);
+    modal.querySelector("#join-room").addEventListener("click", () => {
+      const code = codeInput.value.trim().toUpperCase();
+      const name = nameInput.value.trim().slice(0, 18);
+      if (!/^[A-Z0-9]{4}$/.test(code)) { codeInput.focus(); return; }
+      if (!name) { nameInput.focus(); return; }
+      localStorage.setItem("grabble-last-player-name", name);
+      localStorage.setItem("grabble-pending-join", JSON.stringify({ code, name }));
+      location.href = "/play/" + code;
+    });
+    codeInput.focus();
+  }
+
+  function hostHome() {
+    const begin = () => hostNameEntry();
+    if (sessionStorage.getItem("grabble-entry-splash") === "host") {
+      sessionStorage.removeItem("grabble-entry-splash");
+      opaqueSplash(begin);
+    } else begin();
+  }
+
+  window.GrabbleCreate = { configure, createDefinition, tvHome, home, hostHome, createSetup, opaqueSplash };
 })();

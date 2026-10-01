@@ -1,4 +1,4 @@
-/* Shared room transport. Surface rendering stays in grabble-client.js. */
+/* Shared room transport. Each surface owns its page markup and rendering. */
 (function () {
   let config = {},
     socket = null,
@@ -31,16 +31,10 @@
       role === "play" ? localStorage.getItem("grabble-player-token:" + config.code) || "" : "";
     const controlToken =
       role === "tv"
-        ? localStorage.getItem("grabble-tv-token") || ""
+        ? localStorage.getItem("grabble-tv-token:" + config.code) || ""
         : role === "host"
-          ? localStorage.getItem("grabble-host-token") || ""
+          ? localStorage.getItem("grabble-host-token:" + config.code) || ""
           : "";
-    const displayToken =
-      role === "display"
-        ? new URLSearchParams(location.search).get("displayToken") ||
-          localStorage.getItem("grabble-display-token:" + config.code) ||
-          ""
-        : "";
     socket = new WebSocket(
       (location.protocol === "https:" ? "wss" : "ws") +
         "://" +
@@ -54,9 +48,7 @@
         "&playerToken=" +
         encodeURIComponent(playerToken) +
         "&controlToken=" +
-        encodeURIComponent(controlToken) +
-        "&displayToken=" +
-        encodeURIComponent(displayToken),
+        encodeURIComponent(controlToken),
     );
     socket.onopen = () => {
       if (queuedAction) {
@@ -81,7 +73,7 @@
       if (Number.isFinite(message.seq) && message.seq > lastSeq + 1 && lastSeq > 0)
         send({ type: "sync" });
       if (Number.isFinite(sequence) && sequence > lastSeq) lastSeq = sequence;
-      if (message.type === "authenticated") config.onAuthenticated?.(message.payload || {});
+      if (message.type === "authenticated") config.onAuthenticated?.(message.payload || {}, (message.payload || {}).role);
       if (["ack", "error", "state_changed", "phase_changed", "player_joined", "player_left", "timer_started", "timer_updated", "score_updated", "finished", "room_closed"].includes(message.type))
         config.onEvent?.({ ...message, ...(message.payload || {}) });
       if (message.type === "left") {

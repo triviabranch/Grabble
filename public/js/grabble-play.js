@@ -21,12 +21,12 @@
   };
   const entry = (after) => {
     const modal = document.createElement("div");
-    modal.className = "entry rules show";
+    modal.className = "entry rules show how-to-play-modal";
     modal.innerHTML = '<div class="entry-card">' + s.logo() + '<h2>How to play</h2><div class="rules-list"><div class="rule"><span class="rule-index">01</span><p>Grab a letter from the pool.</p></div><div class="rule"><span class="rule-index">02</span><p>Build the longest word before time runs out.</p></div><div class="rule"><span class="rule-index">03</span><p>You can only grab the next letter on your word.</p></div><div class="rule"><span class="rule-index">04</span><p>If you make a mistake or change your mind, release all your letters and start again.</p></div></div><button id="go">Continue</button></div>';
     document.body.append(modal);
     modal.querySelector("#go").onclick = () => { modal.remove(); after?.(); };
   };
-  const lobby = (state, me) => '<section class="mobile-lobby panel"><div class="mobile-lobby-head"><p class="eyebrow">' + (state.totalRounds > 1 ? "ROUND " + state.round + " OF " + state.totalRounds : "SINGLE ROUND") + '</p><h1>Join Game</h1><p class="mobile-room-code">Room <strong>' + s.esc(s.code) + '</strong></p><p class="mobile-player-count">' + state.players.length + " player" + (state.players.length === 1 ? "" : "s") + ' joined</p></div><div class="mobile-lobby-players">' + (state.players.length ? state.players.map(p => '<div class="mobile-player"><span class="mobile-player-dot"></span><strong>' + s.esc(p.name) + "</strong>" + (p.id === me ? "<small>YOU</small>" : "") + "</div>").join("") : '<p class="status">Waiting for players</p>') + '</div>' + window.GrabbleRoomCommon.rules().replace("display-rules","mobile-lobby-rules") + '<div class="mobile-lobby-action">' + ((state.ownerId === me || state.players.length === 1) ? '<button id="start" class="race-start-cta">Start game</button>' : "<button disabled>Waiting for the creator</button>") + "</div></section>";
+  const lobby = (state, me) => '<section class="mobile-lobby panel"><div class="mobile-lobby-head"><p class="eyebrow">' + (state.totalRounds > 1 ? "ROUND " + state.round + " OF " + state.totalRounds : "SINGLE GAME") + '</p><h1>Lobby</h1><p class="mobile-room-code">Room <strong>' + s.esc(s.code) + '</strong></p><p class="mobile-player-count">' + state.players.length + " player" + (state.players.length === 1 ? "" : "s") + ' joined</p></div><div class="mobile-lobby-players">' + (state.players.length ? state.players.map(p => '<div class="mobile-player"><span class="mobile-player-dot"></span><strong>' + s.esc(p.name) + "</strong>" + (p.id === me ? "<small>YOU</small>" : "") + "</div>").join("") : '<p class="status">Waiting for players</p>') + '</div>' + window.GrabbleRoomCommon.rules().replace("display-rules","mobile-lobby-rules") + '<div class="mobile-lobby-action"><button class="secondary" id="how-to-play">How to play</button>' + ((state.ownerId === me || state.players.length === 1) ? '<button id="start" class="race-start-cta">Start game</button>' : "<button disabled>Waiting for the creator</button>") + "</div></section>";
   const playerTiles = (word) => Array.from(word || "").map((letter) => '<span class="player-word-tile">' + s.esc(letter) + "</span>").join("");
   const playerResults = (state, me) => {
     const players = [...(state.players || [])].sort((a,b) => (b.totalScore || 0) - (a.totalScore || 0));
@@ -56,10 +56,13 @@
   const join = () => {
     s.shell('<section class="center join-room-card panel"><div class="join-room-head"><p class="eyebrow">JOIN THIS GAME</p><h1>Join this room</h1><p>Enter your name to play.</p><span class="room-code-mini">' + s.esc(s.code) + '</span></div><div class="join-field"><input id="name" maxlength="18" placeholder="YOUR NAME"><button id="join">Join game</button></div></section>');
     document.getElementById("join").onclick = () => {
-      const name = document.getElementById("name").value.trim() || "Player";
+      const input = document.getElementById("name");
+      const name = input.value.trim().slice(0, 18);
+      if (!name) { input.focus(); return; }
+      localStorage.setItem("grabble-last-player-name", name);
       localStorage.setItem("grabble-name:" + s.code, name);
       s.shell('<section class="center hero panel"><h1>Joining the room</h1><p class="status">Room <b>' + s.esc(s.code) + "</b></p></section>");
-      entry(() => s.connect("play", name, (next) => render(next)));
+      s.connect("play", name, (next) => render(next));
     };
   };
   const render = (state) => {
@@ -69,6 +72,7 @@
       timer = null;
       s.shell(lobby(state, me));
       document.getElementById("start")?.addEventListener("click", () => window.GrabbleTransport.send({type:"start"}), {once:true});
+      document.getElementById("how-to-play")?.addEventListener("click", () => entry());
       return;
     }
     s.shell(game(state, me));
@@ -88,8 +92,9 @@
     if (pending && pending.code === s.code && pending.name) {
       localStorage.removeItem("grabble-pending-join");
       s.shell('<section class="center hero panel"><h1>Joining the room</h1><p class="status">Room <b>' + s.esc(s.code) + "</b></p></section>");
-      const joinHost = () => s.connect("play", pending.name, (next) => render(next));
-      pending.skipHowToPlay ? joinHost() : entry(joinHost);
+      s.connect("play", pending.name, (next) => render(next));
+    } else if (localStorage.getItem("grabble-player-token:" + s.code)) {
+      s.connect("play", localStorage.getItem("grabble-name:" + s.code) || localStorage.getItem("grabble-last-player-name") || "Player", (next) => render(next));
     } else join();
   };
   boot();
