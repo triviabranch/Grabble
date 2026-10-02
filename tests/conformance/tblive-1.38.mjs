@@ -38,7 +38,7 @@ assert.match(room, /\/unregister\//);
 assert.doesNotMatch(transport, /setInterval\([^)]*fetch|setInterval\([^)]*api/);
 assert.match(workflow, /browser-flow/);
 assert.match(worker, /admin\/register/, 'created rooms must be visible to the local admin namespace');
-assert.match(worker, /contractVersion !== '1\.38'/);
+assert.match(worker, /contractVersion !== '1\.39'/);
 assert.match(worker, /creationContext === 'host' \? 1 : 0/);
 assert.match(await read('public/js/grabble-create.js'), /creationContext: context/);
 assert.match(await read('public/js/grabble-create.js'), /hostPlayer: context === "host" \? \{ displayName: hostName \}/);
