@@ -1123,3 +1123,48 @@ body:has(.shell-tv) #app{height:100dvh;max-height:100dvh;overflow:hidden}
 .shell-tv{--tblive-tv-top-safe:env(safe-area-inset-top,0px)}
 .shell-tv{height:calc(100dvh - var(--tblive-tv-top-safe));min-height:0;max-height:calc(100dvh - var(--tblive-tv-top-safe));padding-top:max(clamp(10px,3vw,42px),var(--tblive-tv-top-safe));}
 .shell-tv>.display-result-stage{height:calc(100dvh - var(--tblive-tv-top-safe))!important;max-height:calc(100dvh - var(--tblive-tv-top-safe))!important;padding-top:max(clamp(18px,4vw,64px),var(--tblive-tv-top-safe))!important;}
+
+
+/* TV gameplay: compact player strips flank and overlap the pool edge. */
+.shell-tv .display-stage:not(:has(.display-lobby)):not(:has(.scoring-stage)){display:block!important;position:relative!important;padding:0!important;overflow:hidden!important}
+.shell-tv .display-stage:not(:has(.display-lobby))>.display-pool{
+ position:absolute!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;
+ width:min(62vw,1100px)!important;height:min(66%,680px)!important;max-width:none!important;max-height:none!important;
+ padding:clamp(48px,6vh,76px) clamp(72px,7vw,120px) clamp(22px,3vh,36px)!important;
+ display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;grid-template-rows:repeat(5,minmax(0,1fr))!important;
+ gap:clamp(6px,.8vw,12px)!important;align-content:center!important;justify-items:center!important;align-items:center!important;overflow:hidden!important;z-index:2!important
+}
+.shell-tv .display-stage:not(:has(.display-lobby))>.display-pool>.token{
+ position:relative!important;inset:auto!important;left:auto!important;top:auto!important;transform:none!important;margin:0!important;
+ width:min(4.2vw,5.2vh,76px)!important;height:min(4.2vw,5.2vh,76px)!important;min-width:30px!important;min-height:30px!important;
+ max-width:100%!important;max-height:100%!important;aspect-ratio:1/1!important;border-radius:clamp(8px,.8vw,14px)!important;
+ display:grid!important;place-items:center!important;font-size:clamp(1rem,1.7vw,1.7rem)!important
+}
+.shell-tv .display-stage>.corners{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;min-height:0!important;z-index:3!important;pointer-events:none!important}
+.shell-tv .display-stage>.corners .corner{
+ position:absolute!important;width:min(22vw,390px)!important;max-width:22vw!important;min-width:0!important;min-height:0!important;max-height:22vh!important;
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;gap:clamp(4px,.6vh,8px)!important;
+ padding:0!important;overflow:hidden!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:var(--bone)!important;text-align:left!important
+}
+.shell-tv .display-stage>.corners .corner:nth-child(1){left:2%!important;top:50%!important;right:auto!important;bottom:auto!important;transform:translateY(-50%)!important}
+.shell-tv .display-stage>.corners .corner:nth-child(2){right:2%!important;top:50%!important;left:auto!important;bottom:auto!important;transform:translateY(-50%)!important;text-align:right!important;align-items:flex-end!important}
+.shell-tv .display-stage>.corners .corner:nth-child(3){left:2%!important;bottom:6%!important;right:auto!important;top:auto!important;transform:none!important}
+.shell-tv .display-stage>.corners .corner:nth-child(4){right:2%!important;bottom:6%!important;left:auto!important;top:auto!important;transform:none!important;text-align:right!important;align-items:flex-end!important}
+.shell-tv .corner .display-player-head{font-size:clamp(.95rem,1.5vw,1.35rem)!important;line-height:1.1!important}
+.shell-tv .corner .player-score-line{display:block!important;margin:0!important;font-size:clamp(.68rem,.9vw,.9rem)!important;line-height:1.2!important;opacity:.88!important}
+.shell-tv .corner .live-word{display:flex!important;flex-wrap:wrap!important;gap:clamp(3px,.35vw,6px)!important;max-width:100%!important;max-height:12vh!important;overflow:hidden!important}
+.shell-tv .corner .live-letter-tile{
+ display:grid!important;flex:0 0 auto!important;place-items:center!important;width:clamp(30px,3.2vw,52px)!important;height:clamp(30px,3.2vw,52px)!important;
+ aspect-ratio:1/1!important;border-radius:clamp(6px,.6vw,10px)!important;background:var(--bone)!important;color:var(--ink)!important;
+ box-shadow:0 3px 0 rgba(37,24,26,.38)!important;font-style:normal!important;font-size:clamp(.95rem,1.5vw,1.35rem)!important;font-weight:1000!important;line-height:1!important
+}
+.shell-tv .corner .live-word-empty{font-size:clamp(.72rem,1vw,1rem)!important;opacity:.8}
+@media(max-width:1100px){
+ .shell-tv .display-stage:not(:has(.display-lobby))>.display-pool{width:68vw!important;height:66%!important;padding:44px 58px 20px!important}
+ .shell-tv .display-stage>.corners .corner{width:23vw!important;max-width:23vw!important}
+ .shell-tv .corner .live-letter-tile{width:clamp(28px,3.5vw,40px)!important;height:clamp(28px,3.5vw,40px)!important}
+}
+@media(max-height:650px){
+ .shell-tv .display-stage:not(:has(.display-lobby))>.display-pool{height:70%!important;padding-top:40px!important}
+ .shell-tv .display-stage>.corners .corner{max-height:26vh!important}
+}
