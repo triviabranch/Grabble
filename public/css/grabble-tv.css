@@ -1172,3 +1172,16 @@ body:has(.shell-tv) #app{height:100dvh;max-height:100dvh;overflow:hidden}
 /* The TV surface injects gameplay into this wrapper; give it the remaining shell height. */
 .shell-tv>#surface-content{flex:1 1 auto;display:flex;flex-direction:column;width:100%;min-width:0;min-height:0;height:auto;overflow:hidden}
 .shell-tv>#surface-content>.display-stage{flex:1 1 auto;width:100%;min-height:0;height:100%;max-height:100%;overflow:hidden}
+
+/* Keep the TV lobby controls fixed while the joined-player list scrolls. */
+.shell-tv .display-stage:has(.display-lobby){display:flex;align-items:stretch;justify-content:center;height:100%;min-height:0;overflow:hidden}
+.shell-tv .display-lobby{height:100%;max-height:100%;min-height:0;align-items:stretch;overflow:hidden}
+.shell-tv .display-copy{display:flex;flex-direction:column;height:100%;max-height:100%;min-height:0;overflow:hidden}
+.shell-tv .display-copy>.eyebrow,
+.shell-tv .display-copy>h1,
+.shell-tv .display-copy>p,
+.shell-tv .display-copy>.display-rules{flex:0 0 auto}
+.shell-tv .display-copy>.display-drawings{flex:1 1 0;min-height:0;max-height:none;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;align-content:start;grid-auto-rows:max-content}
+.shell-tv .display-copy>.display-controls{flex:0 0 auto;position:relative;z-index:2;margin-top:auto;padding-top:clamp(8px,1.2vh,14px)}
+.shell-tv .display-controls .race-start-cta{min-height:54px}
+.shell-tv .display-drawing-card{min-height:0}
