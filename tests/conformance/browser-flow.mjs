@@ -22,7 +22,7 @@ try {
   const hostRequest = await hostRequestPromise;
   const hostPayload = hostRequest.postDataJSON();
   assert.equal(hostPayload.creationContext, 'host');
-  assert.equal(hostPayload.contractVersion, '1.38');
+  assert.equal(hostPayload.contractVersion, '1.39');
   assert.deepEqual(hostPayload.hostPlayer, { displayName: 'Ash' });
   await host.waitForURL(url => /^\/host\/[A-Z0-9]{4}$/.test(url.pathname));
   const hostCode = new URL(host.url()).pathname.split('/').pop();
@@ -77,6 +77,8 @@ try {
   await tv.waitForURL(url => /^\/tv\/[A-Z0-9]{4}$/.test(url.pathname));
   const tvCode = new URL(tv.url()).pathname.split('/').pop();
   await tv.locator('[data-join-qr]').waitFor();
+  assert.ok(await tv.evaluate(code => localStorage.getItem('grabble-tv-token:' + code), tvCode), 'TV creation must retain its controller token');
+  await tv.getByRole('button', { name: 'Start game', exact: true }).waitFor();
 
   const player = await tvContext.newPage();
   await player.goto(base + '/play/' + tvCode, { waitUntil: 'networkidle' });
@@ -92,7 +94,7 @@ try {
   await tv.locator('.display-lobby').waitFor({ state: 'visible', timeout: 10000 });
 
   await browser.close();
-  console.log('TBLive 1.38 host, player-join, read-only projection and TV replay browser flow passed');
+  console.log('TBLive 1.39 host, player-join, read-only projection and hostless TV replay browser flow passed');
 } catch (error) {
   await browser.close();
   throw error;
