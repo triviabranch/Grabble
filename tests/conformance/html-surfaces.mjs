@@ -29,7 +29,7 @@ for (const surface of surfaces) {
   assert.match(source, new RegExp('src="\/js\/' + controllers[surface] + '"'), file + ' must load its own controller');
   assert.doesNotMatch(source, /grabble-client\.js/, file + ' must not load the presentation monolith');
   assert.doesNotMatch(source, /<script>(?!\s*<\/script>)/i, file + ' must not contain inline application code');
-  assert.match(source, /tblive-contract-version" content="1\.38"/, file + ' must declare TBLive 1.38');
+  assert.match(source, /tblive-contract-version" content="1\.38"/, file + ' must declare TBLive 1.39');
 }
 await assert.rejects(access(path.join(root, 'public/js/grabble-client.js')), 'the obsolete presentation monolith must be removed');
 await assert.rejects(access(path.join(root, 'public/css/grabble.css')), 'the obsolete all-surface stylesheet must be removed');
@@ -63,7 +63,7 @@ assert.match(server, /p\[2\] === 'games'/);
 assert.match(server, /kill-all/);
 
 const capabilities = JSON.parse(await read('tblive.capabilities.json'));
-assert.equal(capabilities.contractVersion, '1.38');
+assert.equal(capabilities.contractVersion, '1.39');
 assert.equal(capabilities.capabilities.hostlessTv, true);
 assert.equal(capabilities.capabilities.tvCreatesRoom, true);
 for (const [surface, controller] of Object.entries(controllers)) {
@@ -89,4 +89,4 @@ assert.match(css, /setup-modal-tv[\s\S]*overflow:hidden/);
 assert.match(css, /setup-modal-tv[\s\S]*setup-footer/);
 assert.match(css, /aspect-ratio:auto!important/);
 assert.match(css, /setup-tv-back/);
-console.log('TBLive 1.38 static surface and monolith-boundary checks passed');
+console.log('TBLive 1.39 static surface and monolith-boundary checks passed');
