@@ -29,7 +29,7 @@ for (const surface of surfaces) {
   assert.match(source, new RegExp('src="\/js\/' + controllers[surface] + '"'), file + ' must load its own controller');
   assert.doesNotMatch(source, /grabble-client\.js/, file + ' must not load the presentation monolith');
   assert.doesNotMatch(source, /<script>(?!\s*<\/script>)/i, file + ' must not contain inline application code');
-  assert.match(source, /tblive-contract-version" content="1\.38"/, file + ' must declare TBLive 1.39');
+  assert.match(source, /tblive-contract-version" content="1\.39"/, file + ' must declare TBLive 1.39');
 }
 await assert.rejects(access(path.join(root, 'public/js/grabble-client.js')), 'the obsolete presentation monolith must be removed');
 await assert.rejects(access(path.join(root, 'public/css/grabble.css')), 'the obsolete all-surface stylesheet must be removed');
