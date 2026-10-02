@@ -88,6 +88,9 @@ try {
   await tv.getByText('Riley', { exact: true }).waitFor();
   await tv.getByRole('button', { name: 'Start game', exact: true }).click();
   await tv.locator('.display-pool').waitFor({ state: 'visible', timeout: 10000 });
+  const roundClock = tv.locator('#tv-round-clock');
+  await roundClock.waitFor({ state: 'visible' });
+  assert.match(await roundClock.textContent(), /^\d+s$/, 'TV gameplay must show a live countdown clock');
   await tv.waitForTimeout(33000);
   await tv.locator('.display-result-stage .time-up').waitFor({ state: 'visible', timeout: 10000 });
   await tv.getByRole('button', { name: 'Play again', exact: true }).click();
