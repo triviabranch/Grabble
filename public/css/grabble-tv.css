@@ -1168,3 +1168,7 @@ body:has(.shell-tv) #app{height:100dvh;max-height:100dvh;overflow:hidden}
  .shell-tv .display-stage:not(:has(.display-lobby))>.display-pool{height:70%!important;padding-top:40px!important}
  .shell-tv .display-stage>.corners .corner{max-height:26vh!important}
 }
+
+/* The TV surface injects gameplay into this wrapper; give it the remaining shell height. */
+.shell-tv>#surface-content{flex:1 1 auto;display:flex;flex-direction:column;width:100%;min-width:0;min-height:0;height:auto;overflow:hidden}
+.shell-tv>#surface-content>.display-stage{flex:1 1 auto;width:100%;min-height:0;height:100%;max-height:100%;overflow:hidden}
