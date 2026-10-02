@@ -10,7 +10,7 @@ const adminClient = await read('public/js/grabble-admin.js');
 const workflow = await read('.github/workflows/tblive-conformance.yml');
 const capabilities = JSON.parse(await read('tblive.capabilities.json'));
 
-assert.equal(capabilities.contractVersion, '1.38');
+assert.equal(capabilities.contractVersion, '1.39');
 assert.equal(capabilities.capabilities.hostlessTv, true);
 assert.equal(capabilities.capabilities.tvCreatesRoom, true);
 assert.deepEqual(capabilities.capabilities.creationContexts, ['host', 'tv']);
@@ -62,4 +62,4 @@ assert.match(await read('public/js/grabble-play.js'), /GrabblePlayer\.bind/);
 const play = await read('public/js/grabble-play.js');
 assert.match(play, /phase === "countdown"/);
 assert.match(play, /setInterval\(paint, 100\)/);
-console.log('TBLive 1.38 protocol, creation-context and controller-boundary checks passed');
+console.log('TBLive 1.39 protocol, creation-context and controller-boundary checks passed');
